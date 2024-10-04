@@ -9,8 +9,8 @@ print(300)
 print(200+100)
 
 #input
-# a=input()
-# print(a)
+a=input()
+print(a)
 
 #'#'为注释
 #4个空格缩进
