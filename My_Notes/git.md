@@ -1,4 +1,4 @@
-# git命令
+# git
 ## 初始化设置
 ```
 git config --global user.name "Your Name"
