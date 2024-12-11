@@ -2095,106 +2095,8 @@ else:
 # ('010', '8086')
 # 编译后生成Regular Expression对象，由于该对象自己包含了正则表达式，所以调用对应的方法时不用给出正则字符串。
 ```
-## 13.其他
-```python
-#16. 常用内建模块
-# 16.1. datetime
-# 16.2. collections
-# 16.3. argparse
-# 16.4. base64
-# 16.5. struct
-# 16.6. hashlib
-# 16.7. hmac
-# 16.8. itertools
-# 16.9. contextlib
-# 16.10. urllib
-# 16.11. XML
-# 16.12. HTMLParser
-# 16.13. venv
-
-# 17. 常用第三方模块
-# 17.1. Pillow
-# 17.2. requests
-# 17.3. chardet
-# 17.4. psutil
-
-#略
-
-#图形界面
-
-#第一个GUI程序
-
-#第一步是导入Tkinter包的所有内容：
-from tkinter import *
-#第二步是从Frame派生一个Application类，这是所有Widget的父容器：
-class Application(Frame):
-    def __init__(self, master=None):
-        Frame.__init__(self, master)
-        self.pack()
-        self.createWidgets()
-    def createWidgets(self):
-        self.helloLabel = Label(self, text="Hello, world!")
-        self.helloLabel.pack()
-        self.quitButton = Button(self, text="Quit", command=self.quit)
-        self.quitButton.pack()
-# 在GUI中，每个Button、Label、输入框等，都是一个Widget。Frame则是可以容纳其他Widget的Widget，所有的Widget组合起来就是一棵树。
-# pack()方法把Widget加入到父容器中，并实现布局。pack()是最简单的布局，grid()可以实现更复杂的布局。
-# 在createWidgets()方法中，我们创建一个Label和一个Button，当Button被点击时，触发self.quit()使程序退出。
-# 第三步，实例化Application，并启动消息循环：
-app = Application()
-app.master.title("Hello, world!")
-app.mainloop()
-
-#输入文本
-from tkinter import *
-import tkinter.messagebox as messagebox
-
-class Application(Frame):
-    def __init__(self, master=None):
-        Frame.__init__(self, master)
-        self.pack()
-        self.createWidgets()
-
-    def createWidgets(self):
-        self.nameInput = Entry(self)
-        self.nameInput.pack()
-        self.alertButton = Button(self, text='Hello', command=self.hello)
-        self.alertButton.pack()
-
-    def hello(self):
-        name = self.nameInput.get() or 'world'
-        messagebox.showinfo('Message', 'Hello, %s' % name)
-
-app = Application()
-# 设置窗口标题:
-app.master.title('Hello World')
-# 主消息循环:
-app.mainloop()
-
-#海龟绘图
-# 参考turtle库的说明
-
-# 19. 网络编程
-# 19.1. TCP/IP简介
-# 19.2. TCP编程
-# 19.3. UDP编程
-# 20. 电子邮件
-# 20.1. SMTP发送邮件
-# 20.2. POP3收取邮件
-# 21. 访问数据库
-# 21.1. 使用SQLite
-# 21.2. 使用MySQL
-# 21.3. 使用SQLAlchemy
-# 22. Web开发
-# 22.1. HTTP协议简介
-# 22.2. HTML简介
-# 22.3. WSGI接口
-# 22.4. 使用Web框架
-# 22.5. 使用模板
-#略
-```
-## 14.异步IO
-### 14.1 协程
+## 13.异步IO
+### 13.1 协程
 ```python
 # 协程，又称微线程，纤程。英文名Coroutine。
 # 协程的概念很早就提出来了，但直到最近几年才在某些语言（如Lua）中得到广泛应用。
@@ -2284,7 +2186,7 @@ produce(c)
 # 最后套用Donald Knuth的一句话总结协程的特点：
 # “子程序就是协程的一种特例。”
 ```
-### 14.2 使用asyncio
+### 13.2 使用asyncio
 ```python
 # asyncio是Python 3.4版本引入的标准库，直接内置了对异步IO的支持。
 # asyncio的编程模型就是一个消息循环。asyncio模块内部实现了EventLoop，把需要执行的协程扔到EventLoop中执行，就实现了异步IO。
@@ -2390,7 +2292,7 @@ asyncio.run(main())
 # 在一个async函数内部，通过await可以调用另一个async函数，这个调用看起来是串行执行的，但实际上是由asyncio内部的消息循环控制；
 # 在一个async函数内部，通过await asyncio.gather()可以并发执行若干个async函数。
 ```
-### 14.3 使用aiohttp
+### 13.3 使用aiohttp
 ```python
 # asyncio可以实现单线程并发IO操作。如果仅用在客户端，发挥的威力不大。如果把asyncio用在服务器端，例如Web服务器，由于HTTP连接就是IO操作，因此可以用单线程+async函数实现多用户的高并发支持。
 # asyncio实现了TCP、UDP、SSL等协议，aiohttp则是基于asyncio实现的HTTP框架。
