@@ -1547,3 +1547,211 @@ T(n) = 2*T(n/2) + n
 ### 3.快速排序的原理
 如果要排序数组中下标从 p 到 r 之间的一组数据，我们选择 p 到 r 之间的任意一个数据作为 pivot（分区点）。我们遍历 p 到 r 之间的数据，将小于 pivot 的放到左边，将大于 pivot 的放到右边，将 pivot 放到中间。经过这一步骤之后，数组 p 到 r 之间的数据就被分成了三个部分，前面 p 到 q-1 之间都是小于 pivot 的，中间是 pivot，后面的 q+1 到 r 之间是大于 pivot 的。
 
+我们可以用递归排序下标从 p 到 q-1 之间的数据和下标从 q+1 到 r 之间的数据，直到区间缩小为 1，就说明所有的数据都有序了。
+```
+递推公式：
+quick_sort(p…r) = quick_sort(p…q-1) + quick_sort(q+1… r)
+
+终止条件：
+p >= r
+```
+```
+// 快速排序，A是数组，n表示数组的大小
+quick_sort(A, n) {
+  quick_sort_c(A, 0, n-1)
+}
+// 快速排序递归函数，p,r为下标
+quick_sort_c(A, p, r) {
+  if p >= r then return
+  
+  q = partition(A, p, r) // 获取分区点
+  quick_sort_c(A, p, q-1)
+  quick_sort_c(A, q+1, r)
+}
+```
+partition() 分区函数实际上我们前面已经讲过了，就是随机选择一个元素作为 pivot（一般情况下，可以选择 p 到 r 区间的最后一个元素），然后对 A[p...r]分区，函数返回 pivot 的下标。
+
+如果我们不考虑空间消耗的话，partition() 分区函数可以写得非常简单。我们申请两个临时数组 X 和 Y，遍历 A[p...r]，将小于 pivot 的元素都拷贝到临时数组 X，将大于 pivot 的元素都拷贝到临时数组 Y，最后再将数组 X 和数组 Y 中数据顺序拷贝到 A[p....r]。
+
+如果我们希望快排是原地排序算法，那它的空间复杂度得是 O(1)，那 partition() 分区函数就不能占用太多额外的内存空间，我们就需要在 A[p...r]的原地完成分区操作。
+```
+partition(A, p, r) {
+  pivot := A[r]
+  i := p
+  for j := p to r-1 do {
+    if A[j] < pivot {
+      swap A[i] with A[j]
+      i := i+1
+    }
+  }
+  swap A[i] with A[r]
+  return i
+```
+这里的处理有点类似选择排序。我们通过游标 i 把 A[p...r-1]分成两部分。A[p...i-1]的元素都是小于 pivot 的，我们暂且叫它“已处理区间”，A[i...r-1]是“未处理区间”。我们每次都从未处理的区间 A[i...r-1]中取一个元素 A[j]，与 pivot 对比，如果小于 pivot，则将其加入到已处理区间的尾部，也就是 A[i]的位置。
+
+数组的插入操作还记得吗？在数组某个位置插入元素，需要搬移数据，非常耗时。当时我们也讲了一种处理技巧，就是交换，在 O(1) 的时间复杂度内完成插入操作。这里我们也借助这个思想，只需要将 A[i]与 A[j]交换，就可以在 O(1) 时间复杂度内将 A[j]放到下标为 i 的位置。
+
+数组中有两个相同的元素，比如序列 6，8，7，6，3，5，9，4，在经过第一次分区操作之后，两个 6 的相对先后顺序就会改变。快速排序并不是一个稳定的排序算法。
+
+快排和归并用的都是分治思想，递推公式和递归代码也非常相似，那它们的区别在哪里呢？
+
+归并排序的处理过程是由下到上的，先处理子问题，然后再合并。而快排正好相反，它的处理过程是由上到下的，先分区，然后再处理子问题。归并排序虽然是稳定的、时间复杂度为 O(nlogn) 的排序算法，但是它是非原地排序算法。我们前面讲过，归并之所以是非原地排序算法，主要原因是合并函数无法在原地执行。快速排序通过设计巧妙的原地分区函数，可以实现原地排序，解决了归并排序占用太多内存的问题。
+
+python
+```python
+"""
+    Author: Wenru
+"""
+
+from typing import List
+import random
+
+
+def quick_sort(a: List[int]):
+    _quick_sort_between(a, 0, len(a) - 1)
+
+
+def _quick_sort_between(a: List[int], low: int, high: int):
+    if low < high:
+        # get a random position as the pivot
+        k = random.randint(low, high)
+        a[low], a[k] = a[k], a[low]
+
+        m = _partition(a, low, high)  # a[m] is in final position
+        _quick_sort_between(a, low, m - 1)
+        _quick_sort_between(a, m + 1, high)
+
+
+def _partition(a: List[int], low: int, high: int):
+    pivot, j = a[low], low
+    for i in range(low + 1, high + 1):
+        if a[i] <= pivot:
+            j += 1
+            a[j], a[i] = a[i], a[j]  # swap
+    a[low], a[j] = a[j], a[low]
+    return j
+
+
+def test_quick_sort():
+    a1 = [3, 5, 6, 7, 8]
+    quick_sort(a1)
+    assert a1 == [3, 5, 6, 7, 8]
+    a2 = [2, 2, 2, 2]
+    quick_sort(a2)
+    assert a2 == [2, 2, 2, 2]
+    a3 = [4, 3, 2, 1]
+    quick_sort(a3)
+    assert a3 == [1, 2, 3, 4]
+    a4 = [5, -1, 9, 3, 7, 8, 3, -2, 9]
+    quick_sort(a4)
+    assert a4 == [-2, -1, 3, 3, 5, 7, 8, 9, 9]
+
+
+if __name__ == "__main__":
+    a1 = [3, 5, 6, 7, 8]
+    a2 = [2, 2, 2, 2]
+    a3 = [4, 3, 2, 1]
+    a4 = [5, -1, 9, 3, 7, 8, 3, -2, 9]
+    quick_sort(a1)
+    print(a1)
+    quick_sort(a2)
+    print(a2)
+    quick_sort(a3)
+    print(a3)
+    quick_sort(a4)
+    print(a4)
+```
+python双向排序
+```python
+import random
+
+
+def QuickSort(arr):
+    # 双向排序: 提高非随机输入的性能
+    # 不需要额外的空间,在待排序数组本身内部进行排序
+    # 基准值通过random随机选取
+    # 入参: 待排序数组, 数组开始索引 0, 数组结束索引 len(array)-1
+    if arr is None or len(arr) < 1:
+        return arr
+
+    def swap(arr, low, upper):
+        tmp = arr[low]
+        arr[low] = arr[upper]
+        arr[upper] = tmp
+        return arr
+
+    def QuickSort_TwoWay(arr, low, upper):
+        # 小数组排序i可以用插入或选择排序
+        # if upper-low < 50 : return arr
+        # 基线条件: low index = upper index; 也就是只有一个值的区间
+        if low >= upper:
+            return arr
+        # 随机选取基准值, 并将基准值替换到数组第一个元素
+        swap(arr, low, int(random.uniform(low, upper)))
+        temp = arr[low]
+        # 缓存边界值, 从上下边界同时排序
+        i, j = low, upper
+        while True:
+            # 第一个元素是基准值,所以要跳过
+            i += 1
+            # 在小区间中, 进行排序
+            # 从下边界开始寻找大于基准值的索引
+            while i <= upper and arr[i] <= temp:
+                i += 1
+            # 从上边界开始寻找小于基准值的索引
+            # 因为j肯定大于i, 所以索引值肯定在小区间中
+            while arr[j] > temp:
+                j -= 1
+            # 如果小索引大于等于大索引, 说明排序完成, 退出排序
+            if i >= j:
+                break
+            swap(arr, i, j)
+        # 将基准值的索引从下边界调换到索引分割点
+        swap(arr, low, j)
+        QuickSort_TwoWay(arr, low, j - 1)
+        QuickSort_TwoWay(arr, j + 1, upper)
+        return arr
+
+    return QuickSort_TwoWay(arr, 0, len(arr) - 1)
+
+
+if __name__ == "__main__":
+    a1 = [3, 5, 6, 7, 8]
+    a2 = [2, 2, 2, 2]
+    a3 = [4, 3, 2, 1]
+    a4 = [5, -1, 9, 3, 7, 8, 3, -2, 9]
+    QuickSort(a1)
+    print(a1)
+    QuickSort(a2)
+    print(a2)
+    QuickSort(a3)
+    print(a3)
+    QuickSort(a4)
+    print(a4)
+```
+### 4.快速排序的性能分析
+对于递归代码的时间复杂度，我前面总结的公式，这里也还是适用的。如果每次分区操作，都能正好把数组分成大小接近相等的两个小区间，那快排的时间复杂度递推求解公式跟归并是相同的。所以，快排的时间复杂度也是 O(nlogn)。
+```
+T(1) = C；   n=1时，只需要常量级的执行时间，所以表示为C。
+T(n) = 2*T(n/2) + n； n>1
+```
+公式成立的前提是每次分区操作，我们选择的 pivot 都很合适，正好能将大区间对等地一分为二。但实际上这种情况是很难实现的。
+
+我举一个比较极端的例子。如果数组中的数据原来已经是有序的了，比如 1，3，5，6，8。如果我们每次选择最后一个元素作为 pivot，那每次分区得到的两个区间都是不均等的。我们需要进行大约 n 次分区操作，才能完成快排的整个过程。每次分区我们平均要扫描大约 n/2 个元素，这种情况下，快排的时间复杂度就从 O(nlogn) 退化成了 O(n2)。
+
+我们刚刚讲了两个极端情况下的时间复杂度，一个是分区极其均衡，一个是分区极其不均衡。它们分别对应快排的最好情况时间复杂度和最坏情况时间复杂度。那快排的平均情况时间复杂度是多少呢？
+
+T(n) 在大部分情况下的时间复杂度都可以做到 O(nlogn)，只有在极端情况下，才会退化到 O(n2)。
+### 5.解答开篇
+快排核心思想就是**分治和分区**
+
+我们选择数组区间 A[0...n-1]的最后一个元素 A[n-1]作为 pivot，对数组 A[0...n-1]原地分区，这样数组就分成了三部分，A[0...p-1]、A[p]、A[p+1...n-1]。
+
+如果 p+1=K，那 A[p]就是要求解的元素；如果 K>p+1, 说明第 K 大元素出现在 A[p+1...n-1]区间，我们再按照上面的思路递归地在 A[p+1...n-1]这个区间内查找。同理，如果 K<p+1，那我们就在 A[0...p-1]区间查找。
+
+我们再来看，为什么上述解决思路的时间复杂度是 O(n)？
+
+第一次分区查找，我们需要对大小为 n 的数组执行分区操作，需要遍历 n 个元素。第二次分区查找，我们只需要对大小为 n/2 的数组执行分区操作，需要遍历 n/2 个元素。依次类推，分区遍历元素的个数分别为、n/2、n/4、n/8、n/16.……直到区间缩小为 1。
+
+如果我们把每次分区遍历的元素个数加起来，就是：n+n/2+n/4+n/8+...+1。这是一个等比数列求和，最后的和等于 2n-1。所以，上述解决思路的时间复杂度就为 O(n)。
+## 13 | 线性排序：如何根据年龄给100万用户数据排序？
