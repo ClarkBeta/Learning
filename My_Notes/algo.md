@@ -1,28 +1,28 @@
-
 # 数据结构与算法
-摘自[数据结构与算法之美](https://time.geekbang.org/column/intro/100017301?tab=intro)
+整理自[数据结构与算法之美](https://time.geekbang.org/column/intro/100017301?tab=intro)
 
-## 01|为什么要学习数据结构和算法？
+## 01 | 为什么要学习数据结构和算法？
 #### 1.解决实际工作问题
 #### 2.阅读框架源码，理解背后的设计思想
 #### 3.注重性能
-## 02|如何抓住重点，系统高效地学习数据结构与算法？
+## 02 | 如何抓住重点，系统高效地学习数据结构与算法？
 #### 1.数据结构为算法服务，算法作用在特定的数据结构之上
 #### 2.20个常用知识点：
 10个数据结构：数组，链表，栈，队列，散列表，二叉树，堆，跳表，图，trie树。
+
 10个算法：递归，排序，二分查找，搜索，哈希算法，贪心算法，分治算法，回溯算法，动态规划，字符串匹配算法。
 #### 3.学习算法的来历，自身的特点，适合解决的问题，应用场景
 #### 4.边学边练，适度刷题
 #### 5.多问，多思考，多互动
 #### 6.设立目标
 #### 7.知识需要沉淀
-## 03|复杂度分析（上）：如何分析、统计算法的执行效率和资源？
+## 03 | 复杂度分析（上）：如何分析、统计算法的执行效率和资源？
 复杂度分析是精髓
 ### 1.大O表示法
-所有代码的执行时间T(n)与每行代码的执行次数n成正比.
-```T(n)=O(f(n))```
-T(n)表示时间,n表示数据规模,f(n)表示每行代码执行次数的总和
+所有代码的执行时间T(n)与每行代码的执行次数n成正比.```T(n)=O(f(n))```T(n)表示时间,n表示数据规模,f(n)表示每行代码执行次数的总和
+
 这就是**大O时间复杂度表达法**,表示代码执行时间岁数据规模增长的**变化趋势**,也叫**渐进时间复杂度**,即时间复杂度.
+
 n很大是,可以忽略低阶,常量,系数
 ### 2.时间复杂度分析
 #### 1.只关注执行最多的代码
@@ -183,7 +183,7 @@ a[i]_address = base_address + i * data_type_size
 数组 a[10]中存储了 8 个元素：a，b，c，d，e，f，g，h。现在，我们要依次删除 a，b，c 三个元素。为了避免 d，e，f，g，h 这几个数据会被搬移三次，我们可以先记录下已经删除的数据。每次的删除操作并不是真正地搬移数据，只是记录数据已经被删除。当数组没有更多空间存储数据时，我们再触发执行一次真正的删除操作，这样就大大减少了删除操作导致的数据搬移。
 
 ### 3.警惕数组的访问越界问题
-```
+```java
 int main(int argc, char* argv[]){
     int i = 0;
     int arr[3] = {0};
@@ -216,7 +216,80 @@ Java ArrayList 无法存储基本类型，比如 int、long，需要封装为 In
 从数组存储的内存模型上来看，“下标”最确切的定义应该是“偏移（offset）”。
 
 从 1 开始编号，每次随机访问数组元素都多了一次减法运算，对于 CPU 来说，就是多了一次减法指令
+### 6.代码实现
+python类
+```python
+#
+# 1) Insertion, deletion and random access of array
+# 2) Assumes int for element type
+#
+# Author: Wenru
+#
 
+
+class MyArray:
+    """A simple wrapper around List.
+    You cannot have -1 in the array.
+    """
+
+    def __init__(self, capacity: int):
+        self._data = []
+        self._capacity = capacity
+
+    def __getitem__(self, position: int) -> object:
+        return self._data[position]
+
+    def __setitem__(self, index: int, value: object):
+        self._data[index] = value
+
+    def __len__(self) -> int:
+        return len(self._data)
+
+    def __iter__(self):
+        for item in self._data:
+            yield item
+
+    def find(self, index: int) -> object:
+        try:
+            return self._data[index]
+        except IndexError:
+            return None
+
+    def delete(self, index: int) -> bool:
+        try:
+            self._data.pop(index)
+            return True
+        except IndexError:
+            return False
+
+    def insert(self, index: int, value: int) -> bool:
+        if len(self) >= self._capacity:
+            return False
+        else:
+            return self._data.insert(index, value)
+
+    def print_all(self):
+        for item in self:
+            print(item)
+
+
+def test_myarray():
+    array = MyArray(5)
+    array.insert(0, 3)
+    array.insert(0, 4)
+    array.insert(1, 5)
+    array.insert(3, 9)
+    array.insert(3, 10)
+    assert array.insert(0, 100) is False
+    assert len(array) == 5
+    assert array.find(1) == 5
+    assert array.delete(4) is True
+    array.print_all()
+
+
+if __name__ == "__main__":
+    test_myarray()
+```
 ## 06 | 链表（上）：如何实现LRU缓存淘汰算法?
 缓存是一种提高数据读取性能的技术，在硬件设计、软件开发中都有着非常广泛的应用。
 
@@ -264,7 +337,264 @@ Java ArrayList 无法存储基本类型，比如 int、long，需要封装为 In
 2. 如果此数据没有在缓存链表中，又可以分为两种情况：
 如果此时缓存未满，则将此结点直接插入到链表的头部；
 如果此时缓存已满，则链表尾结点删除，将新的数据结点插入链表的头部。
+```python
+# Definition for singly-linked list.
+class DbListNode(object):
+    def __init__(self, x, y):
+        self.key = x
+        self.val = y
+        self.next = None
+        self.prev = None
 
+
+class LRUCache:
+    '''
+    leet code: 146
+        运用你所掌握的数据结构，设计和实现一个  LRU (最近最少使用) 缓存机制。
+        它应该支持以下操作： 获取数据 get 和 写入数据 put 。
+        获取数据 get(key) - 如果密钥 (key) 存在于缓存中，则获取密钥的值（总是正数），否则返回 -1。
+        写入数据 put(key, value) - 如果密钥不存在，则写入其数据值。
+            当缓存容量达到上限时，它应该在写入新数据之前删除最近最少使用的数据值，从而为新的数据值留出空间
+
+    哈希表+双向链表
+    哈希表: 查询 O(1)
+    双向链表: 有序, 增删操作 O(1)
+
+    Author: Ben
+    '''
+
+    def __init__(self, capacity: int):
+        self.cap = capacity
+        self.hkeys = {}
+        # self.top和self.tail作为哨兵节点, 避免越界
+        self.top = DbListNode(None, -1)
+        self.tail = DbListNode(None, -1)
+        self.top.next = self.tail
+        self.tail.prev = self.top
+
+    def get(self, key: int) -> int:
+
+        if key in self.hkeys.keys():
+            # 更新结点顺序
+            cur = self.hkeys[key]
+            # 跳出原位置
+            cur.next.prev = cur.prev
+            cur.prev.next = cur.next
+            # 最近用过的置于链表首部
+            top_node = self.top.next
+            self.top.next = cur
+            cur.prev = self.top
+            cur.next = top_node
+            top_node.prev = cur
+
+            return self.hkeys[key].val
+        return -1
+
+    def put(self, key: int, value: int) -> None:
+        if key in self.hkeys.keys():
+            cur = self.hkeys[key]
+            cur.val = value
+            # 跳出原位置
+            cur.prev.next = cur.next
+            cur.next.prev = cur.prev
+
+            # 最近用过的置于链表首部
+            top_node = self.top.next
+            self.top.next = cur
+            cur.prev = self.top
+            cur.next = top_node
+            top_node.prev = cur
+        else:
+            # 增加新结点至首部
+            cur = DbListNode(key, value)
+            self.hkeys[key] = cur
+            # 最近用过的置于链表首部
+            top_node = self.top.next
+            self.top.next = cur
+            cur.prev = self.top
+            cur.next = top_node
+            top_node.prev = cur
+            if len(self.hkeys.keys()) > self.cap:
+                self.hkeys.pop(self.tail.prev.key)
+                # 去掉原尾结点
+                self.tail.prev.prev.next = self.tail
+                self.tail.prev = self.tail.prev.prev
+
+    def __repr__(self):
+        vals = []
+        p = self.top.next
+        while p.next:
+            vals.append(str(p.val))
+            p = p.next
+        return '->'.join(vals)
+
+
+if __name__ == '__main__':
+    cache = LRUCache(2)
+    cache.put(1, 1)
+    cache.put(2, 2)
+    print(cache)
+    cache.get(1)  # 返回  1
+    cache.put(3, 3)  # 该操作会使得密钥 2 作废
+    print(cache)
+    cache.get(2)  # 返回 -1 (未找到)
+    cache.put(4, 4)  # 该操作会使得密钥 1 作废
+    print(cache)
+    cache.get(1)  # 返回 -1 (未找到)
+    cache.get(3)  # 返回  3
+    print(cache)
+    cache.get(4)  # 返回  4
+    print(cache)
+```
+### 4.代码实现
+python类
+```python
+"""
+    1) Insertion, deletion and search of singly-linked list;
+    2) Assumes int type for data in list nodes.
+
+    Author: Wenru
+"""
+from typing import Optional
+
+
+class Node:
+
+    def __init__(self, data: int, next_node=None):
+        self.data = data
+        self._next = next_node
+
+
+class SinglyLinkedList:
+
+    def __init__(self):
+        self._head = None
+
+    def find_by_value(self, value: int) -> Optional[Node]:
+        p = self._head
+        while p and p.data != value:
+            p = p._next
+        return p
+
+    def find_by_index(self, index: int) -> Optional[Node]:
+        p = self._head
+        position = 0
+        while p and position != index:
+            p = p._next
+            position += 1
+        return p
+
+    def insert_value_to_head(self, value: int):
+        new_node = Node(value)
+        self.insert_node_to_head(new_node)
+
+    def insert_node_to_head(self, new_node: Node):
+        if new_node:
+            new_node._next = self._head
+            self._head = new_node
+
+    def insert_value_after(self, node: Node, value: int):
+        new_node = Node(value)
+        self.insert_node_after(node, new_node)
+
+    def insert_node_after(self, node: Node, new_node: Node):
+        if not node or not new_node:
+            return
+        new_node._next = node._next
+        node._next = new_node
+
+    def insert_value_before(self, node: Node, value: int):
+        new_node = Node(value)
+        self.insert_node_before(node, new_node)
+
+    def insert_node_before(self, node: Node, new_node: Node):
+        if not self._head or not node or not new_node:
+            return
+        if self._head == node:
+            self.insert_node_to_head(new_node)
+            return
+        current = self._head
+        while current._next and current._next != node:
+            current = current._next
+        if not current._next:  # node is not even in the list
+            return
+        new_node._next = node
+        current._next = new_node
+
+    def delete_by_node(self, node: Node):
+        if not self._head or not node:
+            return
+        if node._next:
+            node.data = node._next.data
+            node._next = node._next._next
+            return
+        # node is the last one or not in the list
+        current = self._head
+        while current and current._next != node:
+            current = current._next
+        if not current:  # node not in the list
+            return
+        current._next = node._next
+
+    def delete_by_value(self, value: int):
+        if not self._head or not value:
+            return
+        fake_head = Node(value + 1)
+        fake_head._next = self._head
+        prev, current = fake_head, self._head
+        while current:
+            if current.data != value:
+                prev._next = current
+                prev = prev._next
+            current = current._next
+        if prev._next:
+            prev._next = None
+        self._head = fake_head._next  # in case head.data == value
+
+    def __repr__(self) -> str:
+        nums = []
+        current = self._head
+        while current:
+            nums.append(current.data)
+            current = current._next
+        return "->".join(str(num) for num in nums)
+
+    # 重写__iter__方法，方便for关键字调用打印值
+    def __iter__(self):
+        node = self._head
+        while node:
+            yield node.data
+            node = node._next
+
+    def print_all(self):
+        current = self._head
+        if current:
+            print(f"{current.data}", end="")
+            current = current._next
+        while current:
+            print(f"->{current.data}", end="")
+            current = current._next
+        print("\n", flush=True)
+
+
+if __name__ == "__main__":
+    l = SinglyLinkedList()
+    for i in range(15):
+        l.insert_value_to_head(i)
+    node9 = l.find_by_value(9)
+    l.insert_value_before(node9, 20)
+    l.insert_value_before(node9, 16)
+    l.insert_value_before(node9, 16)
+    l.delete_by_value(16)
+    node11 = l.find_by_index(3)
+    l.delete_by_node(node11)
+    l.delete_by_node(l._head)
+    l.delete_by_value(13)
+    print(l)
+    for value in l:
+        print(value)
+
+```
 ## 07 | 链表（下）：如何轻松写出正确的链表代码？
 ### 1.技巧一：理解指针或引用的含义
 将某个变量赋值给指针，实际上就是将这个变量的地址赋值给指针，或者反过来说，指针中存储了这个变量的内存地址，指向了这个变量，通过指针就能找到这个变量。
@@ -283,7 +613,13 @@ x->next = p->next;  // 将x的结点的next指针指向b结点；
 删除链表结点时，也一定要记得手动释放内存空间
 ### 3.利用哨兵简化实现难度
 针对链表的插入、删除操作，需要对插入第一个结点和删除最后一个结点的情况进行特殊处理。
-??????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
+
+我们引入哨兵结点，在任何时候，不管链表是不是空，head 指针都会一直指向这个哨兵结点。我们也把这种有哨兵结点的链表叫**带头链表**。相反，没有哨兵结点的链表就叫作**不带头链表**。
+
+你可以发现，哨兵结点是不存储数据的。因为哨兵结点一直存在，所以插入第一个结点和插入其他结点，删除最后一个结点和删除其他结点，都可以统一为相同的代码实现逻辑了。
+
+这里说的是删除最后一个节点，在没有加哨兵的时候，作者的意思是，哪怕只有一个节点也得给他删除掉，哨兵是恒存在于链表中的，删除链表中的最后一个元素（是删除哨兵以外的最后一个，哨兵不参与业务逻辑）所以当哨兵后还跟着一个元素时，也就是有最后一个元素时，站在哨兵的位置依旧可以执行p.next=p.next.next，进而把最后一个干掉
+
 ### 4.技巧四：重点留意边界条件处理
 如果链表为空时，代码是否能正常工作？
 
@@ -304,6 +640,88 @@ x->next = p->next;  // 将x的结点的next指针指向b结点；
 删除链表倒数第 n 个结点
 
 求链表的中间结点
+#### 代码实现
+```python
+class Node:
+    
+    def __init__(self, data: int, next=None):
+        self.data = data
+        self._next = next
+
+# Reverse singly-linked list
+# 单链表反转
+# Note that the input is assumed to be a Node, not a linked list.
+def reverse(head: Node) -> Optional[Node]:
+    reversed_head = None
+    current = head
+    while current:
+        reversed_head, reversed_head._next, current = current, reversed_head, current._next
+    return reversed_head
+
+# Detect cycle in a list
+# 检测环
+def has_cycle(head: Node) -> bool:
+    slow, fast = head, head
+    while fast and fast._next:
+        slow = slow._next
+        fast = fast._next._next
+        if slow == fast:
+            return True
+    return False
+
+# Merge two sorted linked list
+# 有序链表合并
+def merge_sorted_list(l1: Node, l2: Node) -> Optional[Node]:
+    if l1 and l2:
+        p1, p2 = l1, l2
+        fake_head = Node(None)
+        current = fake_head
+        while p1 and p2:
+            if p1.data <= p2.data:
+                current._next = p1
+                p1 = p1._next
+            else:
+                current._next = p2
+                p2 = p2._next
+            current = current._next
+        current._next = p1 if p1 else p2
+        return fake_head._next
+    return l1 or l2
+
+# Remove nth node from the end
+# 删除倒数第n个节点。假设n大于0
+def remove_nth_from_end(head: Node, n: int) -> Optional[Node]:
+    fast = head
+    count = 0
+    while fast and count < n:
+        fast = fast._next
+        count += 1
+    if not fast and count < n:  # not that many nodes
+        return head
+    if not fast and count == n:
+        return head._next
+    
+    slow = head
+    while fast._next:
+        fast, slow = fast._next, slow._next
+    slow._next = slow._next._next
+    return head
+
+def find_middle_node(head: Node) -> Optional[Node]:
+    slow, fast = head, head
+    fast = fast._next if fast else None
+    while fast and fast._next:
+        slow, fast = slow._next, fast._next._next
+    return slow
+
+def print_all(head: Node):
+    nums = []
+    current = head
+    while current:
+        nums.append(current.data)
+        current = current._next
+    print("->".join(str(num) for num in nums))
+```
 ## 08 | 栈：如何实现浏览器的前进和后退功能？
 浏览器的前进、后退功能，我想你肯定很熟悉吧？假设你是 Chrome 浏览器的开发工程师，你会如何实现这个功能呢？
 ### 1.如何理解“栈”？
@@ -376,6 +794,148 @@ main先入栈，再add入栈，再add出栈，最后main出栈
 其实，我们不一定非要用栈来保存临时变量，只不过如果这个函数调用符合后进先出的特性，用栈这种数据结构来实现，是最顺理成章的选择。
 
 从调用函数进入被调用函数，对于数据来说，变化的是什么呢？是作用域。所以根本上，只要能保证每进入一个新的函数，都是一个新的作用域就可以。而要实现这个，用栈就非常方便。在进入被调用函数的时候，分配一段栈空间给这个函数的变量，在函数结束的时候，将栈顶复位，正好回到调用函数的作用域内。
+```python
+"""
+    a simple browser realize
+    Author: zhenchao.zhu
+    解答：我们使用两个栈，X 和 Y，我们把首次浏览的页面依次压入栈 X，当点击后退按钮时，再依次从栈 X 中出栈，
+    并将出栈的数据依次放入栈 Y。当我们点击前进按钮时，我们依次从栈 Y 中取出数据，放入栈 X 中。
+    当栈 X 中没有数据时，那就说明没有页面可以继续后退浏览了。当栈 Y 中没有数据，
+    那就说明没有页面可以点击前进按钮浏览了。
+"""
+
+import sys
+# 引用当前文件夹下的single_linked_list
+sys.path.append('linked_stack.py')
+from linked_stack import LinkedStack
+#from .linked_stack import LinkedStack
+
+class NewLinkedStack(LinkedStack):
+
+    def is_empty(self):
+        return not self._top
+
+
+class Browser():
+
+    def __init__(self):
+        self.forward_stack = NewLinkedStack()
+        self.back_stack = NewLinkedStack()
+
+    def can_forward(self):
+        if self.back_stack.is_empty():
+            return False
+
+        return True
+
+    def can_back(self):
+        if self.forward_stack.is_empty():
+            return False
+
+        return True
+
+    def open(self, url):
+        print("Open new url %s" % url, end="\n")
+        self.forward_stack.push(url)
+
+    def back(self):
+        if self.forward_stack.is_empty():
+            return
+
+        top = self.forward_stack.pop()
+        self.back_stack.push(top)
+        print("back to %s" % top, end="\n")
+
+    def forward(self):
+        if self.back_stack.is_empty():
+            return
+
+        top = self.back_stack.pop()
+        self.forward_stack.push(top)
+        print("forward to %s" % top, end="\n")
+
+
+if __name__ == '__main__':
+
+    browser = Browser()
+    browser.open('a')
+    browser.open('b')
+    browser.open('c')
+    if browser.can_back():
+        browser.back()
+
+    if browser.can_forward():
+        browser.forward()
+
+    browser.back()
+    browser.back()
+    browser.back()
+```
+### 8.代码实现
+链式栈
+```python
+"""
+    Stack based upon linked list
+    基于链表实现的栈
+    
+    Author: Wenru
+"""
+
+from typing import Optional
+
+class Node:
+    
+    def __init__(self, data: int, next=None):
+        self._data = data
+        self._next = next
+    
+
+class LinkedStack:
+    """A stack based upon singly-linked list.
+    """
+    def __init__(self):
+        self._top: Node = None
+    
+    def push(self, value: int):
+        new_top = Node(value)
+        new_top._next = self._top
+        self._top = new_top
+    
+    def pop(self) -> Optional[int]:
+        if self._top:
+            value = self._top._data
+            self._top = self._top._next
+            return value
+    
+    def __repr__(self) -> str:
+        current = self._top
+        nums = []
+        while current:
+            nums.append(current._data)
+            current = current._next
+        return " ".join(f"{num}]" for num in nums)
+
+if __name__ == "__main__":
+    stack = LinkedStack()
+    for i in range(9):
+        stack.push(i)
+    print(stack)
+    for _ in range(3):
+        stack.pop()
+    print(stack)
+```
+顺序栈
+```python
+class Stack:
+    def __init__(self):
+        self.top=-1
+        self.stack=[]
+    def push(self,data):
+        self.stack.append(data)
+        self.top+=1
+    def pop(self):
+        return self.stack.pop()
+```
 ## 09 | 队列：队列在线程池等有限资源池中的应用
 我们知道，CPU 资源是有限的，任务的处理速度与线程个数并不是线性正相关。相反，过多的线程反而会导致 CPU 频繁切换，处理性能下降。所以，线程池的大小一般都是综合考虑要处理任务的特点和硬件环境，来事先设置的。
 
@@ -391,4 +951,506 @@ main先入栈，再add入栈，再add出栈，最后main出栈
 
 队列需要两个指针：一个是 head 指针，指向队头；一个是 tail 指针，指向队尾。
 
-随着不停地进行入队、出队操作，head 和 tail 都会持续往后移动。当 tail 移动到最右边，即使数组中还有空闲空间，也无法继续往队列中添加数据了。
+随着不停地进行入队、出队操作，head 和 tail 都会持续往后移动。当 tail 移动到最右边，即使数组中还有空闲空间，也无法继续往队列中添加数据了。**数据搬移**.如果没有空闲空间了，我们只需要在入队时，再集中触发一次数据的搬移操作。
+
+当队列的 tail 指针移动到数组的最右边后，如果有新的数据入队，我们可以将 head 到 tail 之间的数据，整体搬移到数组中 0 到 tail-head 的位置。
+
+出队操作的时间复杂度仍然是 O(1)，入队操作的时间复杂度还是 O(1)**均摊**
+
+**基于链表的队列实现方法**
+
+基于链表的实现，我们同样需要两个指针：head 指针和 tail 指针。它们分别指向链表的第一个结点和最后一个结点。如图所示，入队时，tail->next= new_node, tail = tail->next；出队时，head = head->next。
+### 3.循环队列
+我们刚才用数组来实现队列的时候，在 tail==n 时，会有数据搬移操作，这样入队操作性能就会受到影响。那有没有办法能够避免数据搬移呢？我们来看看循环队列的解决思路。
+
+要想写出没有 bug 的循环队列的实现代码，我个人觉得，最关键的是，确定好**队空和队满的判定条件**。
+
+队列为空的判断条件仍然是 head == tail。当队满时，**(tail+1)%n=head**
+```java
+public class CircularQueue {
+  // 数组：items，数组大小：n
+  private String[] items;
+  private int n = 0;
+  // head表示队头下标，tail表示队尾下标
+  private int head = 0;
+  private int tail = 0;
+
+  // 申请一个大小为capacity的数组
+  public CircularQueue(int capacity) {
+    items = new String[capacity];
+    n = capacity;
+  }
+
+  // 入队
+  public boolean enqueue(String item) {
+    // 队列满了
+    if ((tail + 1) % n == head) return false;
+    items[tail] = item;
+    tail = (tail + 1) % n;
+    return true;
+  }
+
+  // 出队
+  public String dequeue() {
+    // 如果head == tail 表示队列为空
+    if (head == tail) return null;
+    String ret = items[head];
+    head = (head + 1) % n;
+    return ret;
+  }
+}
+```
+```python
+"""
+    Author: Wenru
+"""
+
+from typing import Optional
+from itertools import chain
+
+class CircularQueue:
+
+    def __init__(self, capacity):
+        self._items = []
+        self._capacity = capacity + 1
+        self._head = 0
+        self._tail = 0
+    
+    def enqueue(self, item: str) -> bool:
+        if (self._tail + 1) % self._capacity == self._head:
+            return False
+        
+        self._items.append(item)
+        self._tail = (self._tail + 1) % self._capacity
+        return True
+    
+    def dequeue(self) -> Optional[str]:
+        if self._head != self._tail:
+            item = self._items[self._head]
+            self._head = (self._head + 1) % self._capacity
+            return item
+    
+    def __repr__(self) -> str:
+        if self._tail >= self._head:
+            return " ".join(item for item in self._items[self._head : self._tail])
+        else:
+            return " ".join(item for item in chain(self._items[self._head:], self._items[:self._tail]))
+
+if __name__ == "__main__":
+    q = CircularQueue(5)
+    for i in range(5):
+        q.enqueue(str(i))
+    q.dequeue()
+    q.dequeue()
+    q.enqueue(str(5))
+    print(q)
+```
+### 4.阻塞队列和并发队列
+**阻塞队列**其实就是在队列基础上增加了阻塞操作。简单来说，就是在队列为空的时候，从队头取数据会被阻塞。因为此时还没有数据可取，直到队列中有了数据才能返回；如果队列已经满了，那么插入数据的操作就会被阻塞，直到队列中有空闲位置后再插入数据，然后再返回。
+
+上述的定义就是一个**生产者 - 消费者模型**。这种基于阻塞队列实现的“生产者 - 消费者模型”，可以有效地协调生产和消费的速度。而且不仅如此，基于阻塞队列，我们还可以通过协调“生产者”和“消费者”的个数，来提高数据的处理效率。比如前面的例子，我们可以多配置几个“消费者”，来应对一个“生产者”。
+
+前面我们讲了阻塞队列，在多线程情况下，会有多个线程同时操作队列，这个时候就会存在线程安全问题，那如何实现一个线程安全的队列呢？需要考虑多个生产者或消费者并发操作队列可能导致的问题，如数据覆盖和重复读取。
+
+线程安全的队列我们叫作并发队列。最简单直接的实现方式是直接在 enqueue()、dequeue() 方法上加锁，但是锁粒度大并发度会比较低，同一时刻仅允许一个存或者取操作。实际上，基于数组的循环队列，利用 CAS 原子操作，可以实现非常高效的并发队列。这也是循环队列比链式队列应用更加广泛的原因。
+### 5.解答开篇
+我们现在回过来看下开篇的问题。线程池没有空闲线程时，新的任务请求线程资源时，线程池该如何处理？各种处理策略又是如何实现的呢？
+
+我们一般有两种处理策略。第一种是非阻塞的处理方式，直接拒绝任务请求；另一种是阻塞的处理方式，将请求排队，等到有空闲线程时，取出排队的请求继续处理。那如何存储排队的请求呢？
+
+我们希望公平地处理每个排队的请求，先进者先服务，所以队列这种数据结构很适合来存储排队请求。
+
+基于链表的实现方式，可以实现一个支持无限排队的无界队列（unbounded queue），但是可能会导致过多的请求排队等待，请求处理的响应时间过长。所以，针对响应时间比较敏感的系统，基于链表实现的无限排队的线程池是不合适的。
+
+而基于数组实现的有界队列（bounded queue），队列的大小有限，所以线程池中排队的请求超过队列大小时，接下来的请求就会被拒绝，这种方式对响应时间敏感的系统来说，就相对更加合理。不过，设置一个合理的队列大小，也是非常有讲究的。队列太大导致等待的请求太多，队列太小会导致无法充分利用系统资源、发挥最大性能。
+
+**实际上，对于大部分资源有限的场景，当没有空闲资源时，基本上都可以通过“队列”这种数据结构来实现请求排队。**
+### 6.代码实现
+顺式队列
+```python
+"""
+    Queue based upon array
+    用数组实现的队列
+
+    Author: Wenru
+"""
+
+from typing import Optional
+
+class ArrayQueue:
+    
+    def __init__(self, capacity: int):
+        self._items = []
+        self._capacity = capacity
+        self._head = 0
+        self._tail = 0
+
+    def enqueue(self, item: str) -> bool:
+        if self._tail == self._capacity:
+            if self._head == 0:
+                return False
+            else:
+                for i in range(0, self._tail - self._head):
+                    self._items[i] = self._items[i + self._head]
+                self._tail = self._tail - self._head
+                self._head = 0
+        
+        self._items.insert(self._tail, item)
+        self._tail += 1
+        return True
+    
+    def dequeue(self) -> Optional[str]:
+        if self._head != self._tail:
+            item = self._items[self._head]
+            self._head += 1
+            return item
+        else:
+            return None
+    
+    def __repr__(self) -> str:
+        return " ".join(item for item in self._items[self._head : self._tail])
+
+```
+链式队列
+```python
+"""
+    Queue based upon linked list
+
+    Author: Wenru
+"""
+
+from typing import Optional
+
+class Node:
+    
+    def __init__(self, data: str, next=None):
+        self.data = data
+        self._next = next
+
+class LinkedQueue:
+
+    def __init__(self):
+        self._head: Optional[Node] = None
+        self._tail: Optional[Node] = None
+    
+    def enqueue(self, value: str):
+        new_node = Node(value)
+        if self._tail:
+            self._tail._next = new_node
+        else:
+            self._head = new_node
+        self._tail = new_node
+    
+    def dequeue(self) -> Optional[str]:
+        if self._head:
+            value = self._head.data
+            self._head = self._head._next
+            if not self._head:
+                self._tail = None
+            return value
+    
+    def __repr__(self) -> str:
+        values = []
+        current = self._head
+        while current:
+            values.append(current.data)
+            current = current._next
+        return "->".join(value for value in values)
+
+
+if __name__ == "__main__":
+    q = LinkedQueue()
+    for i in range(10):
+        q.enqueue(str(i))
+    print(q)
+
+    for _ in range(3):
+        q.dequeue()
+    print(q)
+
+    q.enqueue("7")
+    q.enqueue("8")
+    print(q)
+```
+## 10 | 递归：如何用三行代码找到“最终推荐人”？
+推荐注册返佣金的这个功能我想你应该不陌生吧？现在很多 App 都有这个功能。这个功能中，用户 A 推荐用户 B 来注册，用户 B 又推荐了用户 C 来注册。我们可以说，用户 C 的“最终推荐人”为用户 A，用户 B 的“最终推荐人”也为用户 A，而用户 A 没有“最终推荐人”。
+
+**给定一个用户 ID，如何查找这个用户的“最终推荐人”?**
+### 1.如何理解“递归”？
+递归求解问题的分解过程，去的过程叫“递”，回来的过程叫“归”。基本上，所有的递归问题都可以用递推公式来表示。
+### 2.递归需要满足的三个条件
+**1.一个问题的解可以分解为几个子问题的解**何为子问题？子问题就是数据规模更小的问题。
+
+**2.这个问题与分解之后的子问题，除了数据规模不同，求解思路完全一样**
+
+**3.存在递归终止条件**把问题分解为子问题，把子问题再分解为子子问题，一层一层分解下去，不能存在无限循环，这就需要有终止条件。
+### 3.如何编写递归代码？
+写递归代码最关键的是**写出递推公式，找到终止条件**
+
+假如这里有 n 个台阶，每次你可以跨 1 个台阶或者 2 个台阶，请问走这 n 个台阶有多少种走法？
+
+递推公式:```f(n) = f(n-1)+f(n-2)```.终止条件:f(1)=1，f(2)=2。
+
+写递归代码的关键就是**找到如何将大问题分解为小问题的规律，并且基于此写出递推公式，然后再推敲终止条件，最后将递推公式和终止条件翻译成代码。**
+
+**只要遇到递归，我们就把它抽象成一个递推公式，不用想一层层的调用关系，不要试图用人脑去分解递归的每个步骤。**
+### 4.递归代码要警惕堆栈溢出
+函数调用会使用栈来保存临时变量。每调用一个函数，都会将临时变量封装为栈帧压入内存栈，等函数执行完成返回时，才出栈。系统栈或者虚拟机栈空间一般都不大。如果递归求解的数据规模很大，调用层次很深，一直压入栈，就会有堆栈溢出的风险。
+
+我们可以通过在代码中限制递归调用的最大深度的方式来解决这个问题。递归调用超过一定深度（比如 1000）之后，我们就不继续往下再递归了，直接返回报错。
+### 5.递归代码要警惕重复计算
+对于刚才的递归代码，想要计算 f(5)，需要先计算 f(4) 和 f(3)，而计算 f(4) 还需要计算 f(3)，因此，f(3) 就被计算了很多次，这就是重复计算问题。
+
+为了避免重复计算，我们可以通过一个数据结构（比如散列表）来保存已经求解过的 f(k)。当递归调用到 f(k) 时，先看下是否已经求解过了。如果是，则直接从散列表中取值返回，不需要重复计算，这样就能避免刚讲的问题了。
+
+在时间效率上，递归代码里多了很多函数调用，当这些函数调用的数量较大时，就会积聚成一个可观的时间成本。在空间复杂度上，因为递归调用一次就会在内存栈中保存一次现场数据，所以在分析递归代码空间复杂度时，需要额外考虑这部分的开销，比如我们前面讲到的电影院递归代码，空间复杂度并不是 O(1)，而是 O(n)。
+### 6.怎么将递归代码改写为非递归代码？
+所有的递归代码都可以改为这种**迭代循环**的非递归写法
+
+因为递归本身就是借助栈来实现的，只不过我们使用的栈是系统或者虚拟机本身提供的，我们没有感知罢了。如果我们自己在内存堆上实现栈，手动模拟入栈、出栈过程，这样任何递归代码都可以改写成看上去不是递归代码的样子。
+### 7.解答开篇
+如何找到“最终推荐人”？
+```java
+long findRootReferrerId(long actorId) {
+  Long referrerId = select referrer_id from [table] where actor_id = actorId;
+  if (referrerId == null) return actorId;
+  return findRootReferrerId(referrerId);
+}
+```
+## 11 | 排序（上）：为什么插入排序比冒泡排序更受欢迎？
+插入排序和冒泡排序的时间复杂度相同，都是 O(n2)，在实际的软件开发里，为什么我们更倾向于使用插入排序算法而不是冒泡排序算法呢？
+### 1.如何分析一个“排序算法”？
+#### 排序算法的执行效率
+1.最好情况、最坏情况、平均情况时间复杂度
+
+我们在分析排序算法的时间复杂度时，要分别给出最好情况、最坏情况、平均情况下的时间复杂度。除此之外，你还要说出最好、最坏时间复杂度对应的要排序的原始数据是什么样的。
+
+第一，有些排序算法会区分，为了好对比，所以我们最好都做一下区分。第二，对于要排序的数据，有的接近有序，有的完全无序。有序度不同的数据，对于排序的执行时间肯定是有影响的，我们要知道排序算法在不同数据下的性能表现。
+
+2.时间复杂度的系数、常数 、低阶
+
+实际的软件开发中，我们排序的可能是 10 个、100 个、1000 个这样规模很小的数据，所以，在对同一阶时间复杂度的排序算法性能对比的时候，我们就要把系数、常数、低阶也考虑进来。
+
+3.比较次数和交换（或移动）次数
+
+如果我们在分析排序算法的执行效率的时候，应该把比较次数和交换（或移动）次数也考虑进去。
+#### 排序算法的内存消耗
+算法的内存消耗可以通过空间复杂度来衡量，排序算法也不例外。
+
+**原地排序**（Sorted in place）。原地排序算法，就是特指空间复杂度是 O(1) 的排序算法。
+#### 排序算法的稳定性
+**稳定性**。这个概念是说，如果待排序的序列中存在值相等的元素，经过排序之后，相等元素之间原有的先后顺序不变。
+
+比如我们有一组数据 2，9，3，4，8，3，按照大小排序之后就是 2，3，3，4，8，9。这组数据里有两个 3。经过某种排序算法排序之后，如果两个 3 的前后顺序没有改变，那我们就把这种排序算法叫作**稳定的排序算法**；如果前后顺序发生变化，那对应的排序算法就叫作**不稳定的排序算法**。
+
+为什么要考察排序算法的稳定性呢？
+
+在真正软件开发中，我们要排序的往往不是单纯的整数，而是一组对象，我们需要按照对象的某个 key 来排序。
+
+比如说，我们现在要给电商交易系统中的“订单”排序。订单有两个属性，一个是下单时间，另一个是订单金额。如果我们现在有 10 万条订单数据，我们希望按照金额从小到大对订单数据排序。对于金额相同的订单，我们希望按照下单时间从早到晚有序。
+
+借助稳定排序算法，这个问题可以非常简洁地解决。解决思路是这样的：我们先按照下单时间给订单排序，注意是按照下单时间，不是金额。排序完成之后，我们用稳定排序算法，按照订单金额重新排序。两遍排序之后，我们得到的订单数据就是按照金额从小到大排序，金额相同的订单按照下单时间从早到晚排序的。
+
+**稳定排序算法可以保持金额相同的两个对象，在排序之后的前后顺序不变。**第一次排序之后，所有的订单按照下单时间从早到晚有序了。在第二次排序中，我们用的是稳定的排序算法，所以经过第二次排序之后，相同金额的订单仍然保持下单时间从早到晚有序。
+### 2.冒泡排序（Bubble Sort）
+冒泡排序只会操作相邻的两个数据。每次冒泡操作都会对相邻的两个元素进行比较，看是否满足大小关系要求。如果不满足就让它俩互换。一次冒泡会让至少一个元素移动到它应该在的位置，重复 n 次，就完成了 n 个数据的排序工作。
+
+实际上，刚讲的冒泡过程还可以优化。当某次冒泡操作已经没有数据交换时，说明已经达到完全有序，不用再继续执行后续的冒泡操作。
+#### 第一，冒泡排序是原地排序算法吗？
+冒泡的过程只涉及相邻数据的交换操作，只需要常量级的临时空间，所以它的空间复杂度为 O(1)，是一个原地排序算法。
+#### 第二，冒泡排序是稳定的排序算法吗？
+在冒泡排序中，只有交换才可以改变两个元素的前后顺序。为了保证冒泡排序算法的稳定性，当有相邻的两个元素大小相等的时候，我们不做交换，相同大小的数据在排序前后不会改变顺序，所以冒泡排序是稳定的排序算法。
+#### 第三，冒泡排序的时间复杂度是多少？
+最好情况下，要排序的数据已经是有序的了，我们只需要进行一次冒泡操作，就可以结束了，所以最好情况时间复杂度是 O(n)。而最坏的情况是，要排序的数据刚好是倒序排列的，我们需要进行 n 次冒泡操作，所以最坏情况时间复杂度为 O(n2)。
+
+对于包含 n 个数据的数组，这 n 个数据就有 n! 种排列方式。不同的排列方式，冒泡排序执行的时间肯定是不同的。
+
+有序度是数组中具有有序关系的元素对的个数。有序元素对用数学表达式表示就是这样：
+```
+有序元素对：a[i] <= a[j], 如果i < j。
+```
+
+对于一个倒序排列的数组，比如 6，5，4，3，2，1，有序度是 0；对于一个完全有序的数组，比如 1，2，3，4，5，6，有序度就是 n*(n-1)/2，也就是 15。我们把这种完全有序的数组的有序度叫作**满有序度**。
+
+逆序度的定义正好跟有序度相反
+```
+逆序元素对：a[i] > a[j], 如果i < j。
+```
+
+**逆序度 = 满有序度 - 有序度**
+
+冒泡排序包含两个操作原子，**比较和交换**。每交换一次，有序度就加 1。不管算法怎么改进，交换次数总是确定的，即为**逆序度，也就是n*(n-1)/2–初始有序度。**
+
+对于包含 n 个数据的数组进行冒泡排序，平均交换次数是多少呢？最坏情况下，初始状态的有序度是 0，所以要进行 n*(n-1)/2 次交换。最好情况下，初始状态的有序度是 n*(n-1)/2，就不需要进行交换。我们可以取个中间值 n*(n-1)/4，来表示初始有序度既不是很高也不是很低的平均情况。
+
+换句话说，平均情况下，需要 n*(n-1)/4 次交换操作，比较操作肯定要比交换操作多，而复杂度的上限是 O(n2)，所以平均情况下的时间复杂度就是 O(n2)。
+#### 代码实现
+```python
+def bubble_sort(a: List[int]):
+    length = len(a)
+    if length <= 1:
+        return
+
+    for i in range(length):
+        made_swap = False
+        for j in range(length - i - 1):
+            if a[j] > a[j + 1]:
+                a[j], a[j + 1] = a[j + 1], a[j]
+                made_swap = True
+        if not made_swap:
+            break
+```
+### 3.插入排序（Insertion Sort）
+一个有序的数组，我们往里面添加一个新的数据后，如何继续保持数据有序呢？很简单，我们只要遍历数组，找到数据应该插入的位置将其插入即可。这是一个动态排序的过程，即动态地往有序集合中添加数据，我们可以通过这种方法保持集合中的数据一直有序。
+
+**插入排序具体是如何借助上面的思想来实现排序的呢?**
+
+首先，我们将数组中的数据分为两个区间，已排序区间和未排序区间。初始已排序区间只有一个元素，就是数组的第一个元素。插入算法的核心思想是取未排序区间中的元素，在已排序区间中找到合适的插入位置将其插入，并保证已排序区间数据一直有序。重复这个过程，直到未排序区间中元素为空，算法结束。
+
+插入排序也包含两种操作，一种是**元素的比较**，一种是**元素的移动**。当我们需要将一个数据 a 插入到已排序区间时，需要拿 a 与已排序区间的元素依次比较大小，找到合适的插入位置。找到插入点之后，我们还需要将插入点之后的元素顺序往后移动一位，这样才能腾出位置给元素 a 插入。
+
+#### 第一，插入排序是原地排序算法吗？
+空间复杂度是 O(1)，也就是说，这是一个原地排序算法。
+#### 第二，插入排序是稳定的排序算法吗？
+对于值相同的元素，我们可以选择将后面出现的元素，插入到前面出现元素的后面，这样就可以保持原有的前后顺序不变，所以插入排序是稳定的排序算法。
+#### 第三，插入排序的时间复杂度是多少？
+最好是时间复杂度为 O(n)。注意，这里是**从尾到头遍历已经有序的数据。**
+
+如果数组是倒序的，每次插入都相当于在数组的第一个位置插入新的数据，所以需要移动大量的数据，所以最坏情况时间复杂度为 O(n2)。
+
+数组中插入一个数据的平均时间复杂度是 O(n).对于插入排序来说，每次插入操作都相当于在数组中插入一个数据，循环执行 n 次插入操作，所以平均时间复杂度为 O(n2)。
+#### 代码实现
+```python
+def insertion_sort(a: List[int]):
+    length = len(a)
+    if length <= 1:
+        return
+
+    for i in range(1, length):
+        value = a[i]
+        j = i - 1
+        while j >= 0 and a[j] > value:
+            a[j + 1] = a[j]
+            j -= 1
+        a[j + 1] = value
+```
+### 4.选择排序（Selection Sort）
+选择排序算法的实现思路有点类似插入排序，也分已排序区间和未排序区间。但是选择排序每次会从未排序区间中找到最小的元素，将其放到已排序区间的末尾。
+
+选择排序空间复杂度为 O(1)，是一种原地排序算法。选择排序的最好情况时间复杂度、最坏情况和平均情况时间复杂度都为 O(n2)。
+
+选择排序是一种不稳定的排序算法。选择排序每次都要找剩余未排序元素中的最小值，并和前面的元素交换位置，这样破坏了稳定性。
+
+比如 5，8，5，2，9 这样一组数据，使用选择排序算法来排序的话，第一次找到最小元素 2，与第一个 5 交换位置，那第一个 5 和中间的 5 顺序就变了，所以就不稳定了。
+#### 代码实现
+```python
+def selection_sort(a: List[int]):
+    length = len(a)
+    if length <= 1:
+        return
+
+    for i in range(length):
+        min_index = i
+        min_val = a[i]
+        for j in range(i, length):
+            if a[j] < min_val:
+                min_val = a[j]
+                min_index = j
+        a[i], a[min_index] = a[min_index], a[i]
+```
+### 4.解答开篇
+为什么插入排序要比冒泡排序更受欢迎呢？
+
+从代码实现上来看，冒泡排序的数据交换要比插入排序的数据移动要复杂，冒泡排序需要 3 个赋值操作，而插入排序只需要 1 个。
+```java
+//冒泡排序中数据的交换操作：
+if (a[j] > a[j+1]) { // 交换
+   int tmp = a[j];
+   a[j] = a[j+1];
+   a[j+1] = tmp;
+   flag = true;
+}
+//插入排序中数据的移动操作：
+if (a[j] > value) {
+  a[j+1] = a[j];  // 数据移动
+} else {
+  break;
+}
+```
+## 12 | 排序（下）：如何用快排思想在O(n)内查找第K大元素？
+如何在 O(n) 的时间复杂度内查找一个无序数组中的第 K 大元素？
+### 1.归并排序的原理
+如果要排序一个数组，我们先把数组从中间分成前后两部分，然后对前后两部分分别排序，再将排好序的两部分合并在一起，这样整个数组就都有序了。
+
+归并排序使用的就是**分治思想**。分治，顾名思义，就是分而治之，将一个大问题分解成小的子问题来解决。小的子问题解决了，大问题也就解决了。
+
+**分治是一种解决问题的处理思想，递归是一种编程技巧**
+
+**如何用递归代码来实现归并排序**
+```
+递推公式：
+merge_sort(p…r) = merge(merge_sort(p…q), merge_sort(q+1…r))
+终止条件：
+p >= r 不用再继续分解
+```
+merge_sort(p…r) 表示，给下标从 p 到 r 之间的数组排序。我们将这个排序问题转化为了两个子问题，merge_sort(p…q) 和 merge_sort(q+1…r)，其中下标 q 等于 p 和 r 的中间位置，也就是 (p+r)/2。当下标从 p 到 q 和从 q+1 到 r 这两个子数组都排好序之后，我们再将两个有序的子数组合并在一起，这样下标从 p 到 r 之间的数据就也排好序了。
+
+```
+// 归并排序算法, A是数组，n表示数组大小
+merge_sort(A, n) {
+  merge_sort_c(A, 0, n-1)
+}
+// 递归调用函数
+merge_sort_c(A, p, r) {
+  // 递归终止条件
+  if p >= r  then return
+  // 取p到r之间的中间位置q
+  q = (p+r) / 2
+  // 分治递归
+  merge_sort_c(A, p, q)
+  merge_sort_c(A, q+1, r)
+  // 将A[p...q]和A[q+1...r]合并为A[p...r]
+  merge(A[p...r], A[p...q], A[q+1...r])
+}
+```
+你可能已经发现了，merge(A[p...r], A[p...q], A[q+1...r]) 这个函数的作用就是，将已经有序的 A[p...q]和 A[q+1....r]合并成一个有序的数组，并且放入 A[p....r]。
+
+我们申请一个临时数组 tmp，大小与 A[p...r]相同。我们用两个游标 i 和 j，分别指向 A[p...q]和 A[q+1...r]的第一个元素。比较这两个元素 A[i]和 A[j]，如果 A[i]<=A[j]，我们就把 A[i]放入到临时数组 tmp，并且 i 后移一位，否则将 A[j]放入到数组 tmp，j 后移一位。
+
+继续上述比较过程，直到其中一个子数组中的所有数据都放入临时数组中，再把另一个数组中的数据依次加入到临时数组的末尾，这个时候，临时数组中存储的就是两个子数组合并之后的结果了。最后再把临时数组 tmp 中的数据拷贝到原数组 A[p...r]中。
+```
+merge(A[p...r], A[p...q], A[q+1...r]) {
+  var i := p，j := q+1，k := 0 // 初始化变量i, j, k
+  var tmp := new array[0...r-p] // 申请一个大小跟A[p...r]一样的临时数组
+  while i<=q AND j<=r do {
+    if A[i] <= A[j] {
+      tmp[k++] = A[i++] // i++等于i:=i+1
+    } else {
+      tmp[k++] = A[j++]
+    }
+  }
+  
+  // 判断哪个子数组中有剩余的数据
+  var start := i，end := q
+  if j<=r then start := j, end:=r
+  
+  // 将剩余的数据拷贝到临时数组tmp
+  while start <= end do {
+    tmp[k++] = A[start++]
+  }
+  
+  // 将tmp中的数组拷贝回A[p...r]
+  for i:=0 to r-p do {
+    A[p+i] = tmp[i]
+  }
+}
+```
+### 2.归并排序的性能分析
+#### 第一，归并排序是稳定的排序算法吗？
+在合并的过程中，如果 A[p...q]和 A[q+1...r]之间有值相同的元素，那我们可以像伪代码中那样，先把 A[p...q]中的元素放入 tmp 数组。这样就保证了值相同的元素，在合并前后的先后顺序不变。所以，归并排序是一个稳定的排序算法。
+#### 第二，归并排序的时间复杂度是多少？
+如果我们定义求解问题 a 的时间是 T(a)，求解问题 b、c 的时间分别是 T(b) 和 T( c)，那我们就可以得到这样的递推关系式：
+```
+T(a) = T(b) + T(c) + K
+```
+其中 K 等于将两个子问题 b、c 的结果合并成问题 a 的结果所消耗的时间。
