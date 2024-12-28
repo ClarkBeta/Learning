@@ -1445,6 +1445,74 @@ merge(A[p...r], A[p...q], A[q+1...r]) {
   }
 }
 ```
+python
+```python
+"""
+    Author: Wenru
+"""
+
+from typing import List
+
+
+def merge_sort(a: List[int]):
+    _merge_sort_between(a, 0, len(a) - 1)
+
+
+def _merge_sort_between(a: List[int], low: int, high: int):
+    # The indices are inclusive for both low and high.
+    if low < high:
+        mid = low + (high - low) // 2
+        _merge_sort_between(a, low, mid)
+        _merge_sort_between(a, mid + 1, high)
+        _merge(a, low, mid, high)
+
+
+def _merge(a: List[int], low: int, mid: int, high: int):
+    # a[low:mid], a[mid+1, high] are sorted.
+    i, j = low, mid + 1
+    tmp = []
+    while i <= mid and j <= high:
+        if a[i] <= a[j]:
+            tmp.append(a[i])
+            i += 1
+        else:
+            tmp.append(a[j])
+            j += 1
+    start = i if i <= mid else j
+    end = mid if i <= mid else high
+    tmp.extend(a[start:end + 1])
+    a[low:high + 1] = tmp
+
+
+def test_merge_sort():
+    a1 = [3, 5, 6, 7, 8]
+    merge_sort(a1)
+    assert a1 == [3, 5, 6, 7, 8]
+    a2 = [2, 2, 2, 2]
+    merge_sort(a2)
+    assert a2 == [2, 2, 2, 2]
+    a3 = [4, 3, 2, 1]
+    merge_sort(a3)
+    assert a3 == [1, 2, 3, 4]
+    a4 = [5, -1, 9, 3, 7, 8, 3, -2, 9]
+    merge_sort(a4)
+    assert a4 == [-2, -1, 3, 3, 5, 7, 8, 9, 9]
+
+
+if __name__ == "__main__":
+    a1 = [3, 5, 6, 7, 8]
+    a2 = [2, 2, 2, 2]
+    a3 = [4, 3, 2, 1]
+    a4 = [5, -1, 9, 3, 7, 8, 3, -2, 9]
+    merge_sort(a1)
+    print(a1)
+    merge_sort(a2)
+    print(a2)
+    merge_sort(a3)
+    print(a3)
+    merge_sort(a4)
+    print(a4)
+```
 ### 2.归并排序的性能分析
 #### 第一，归并排序是稳定的排序算法吗？
 在合并的过程中，如果 A[p...q]和 A[q+1...r]之间有值相同的元素，那我们可以像伪代码中那样，先把 A[p...q]中的元素放入 tmp 数组。这样就保证了值相同的元素，在合并前后的先后顺序不变。所以，归并排序是一个稳定的排序算法。
@@ -1454,3 +1522,28 @@ merge(A[p...r], A[p...q], A[q+1...r]) {
 T(a) = T(b) + T(c) + K
 ```
 其中 K 等于将两个子问题 b、c 的结果合并成问题 a 的结果所消耗的时间。
+
+**不仅递归求解的问题可以写成递推公式，递归代码的时间复杂度也可以写成递推公式。**
+
+我们假设对 n 个元素进行归并排序需要的时间是 T(n)，那分解成两个子数组排序的时间都是 T(n/2)。我们知道，merge() 函数合并两个有序子数组的时间复杂度是 O(n)。所以，套用前面的公式，归并排序的时间复杂度的计算公式就是：
+```
+T(1) = C；   n=1时，只需要常量级的执行时间，所以表示为C。
+T(n) = 2*T(n/2) + n； n>1
+```
+```
+T(n) = 2*T(n/2) + n
+     = 2*(2*T(n/4) + n/2) + n = 4*T(n/4) + 2*n
+     = 4*(2*T(n/8) + n/4) + 2*n = 8*T(n/8) + 3*n
+     = 8*(2*T(n/16) + n/8) + 3*n = 16*T(n/16) + 4*n
+     ......
+     = 2^k * T(n/2^k) + k * n
+     ......
+```
+通过这样一步一步分解推导，我们可以得到 T(n) = 2^kT(n/2^k)+kn。当 T(n/2^k)=T(1) 时，也就是 n/2^k=1，我们得到 k=log2n 。我们将 k 值代入上面的公式，得到 T(n)=Cn+nlog2n 。如果我们用大 O 标记法来表示的话，T(n) 就等于 O(nlogn)。所以归并排序的时间复杂度是 O(nlogn)。
+#### 第三，归并排序的空间复杂度是多少？
+归并排序不是原地排序算法。这是因为归并排序的合并函数，在合并两个有序数组为一个有序数组时，需要借助额外的存储空间。实际上，递归代码的空间复杂度并不能像时间复杂度那样累加。
+
+刚刚我们忘记了最重要的一点，那就是，尽管每次合并操作都需要申请额外的内存空间，但在合并完成之后，临时开辟的内存空间就被释放掉了。在任意时刻，CPU 只会有一个函数在执行，也就只会有一个临时的内存空间在使用。临时内存空间最大也不会超过 n 个数据的大小，所以空间复杂度是 O(n)。
+### 3.快速排序的原理
+如果要排序数组中下标从 p 到 r 之间的一组数据，我们选择 p 到 r 之间的任意一个数据作为 pivot（分区点）。我们遍历 p 到 r 之间的数据，将小于 pivot 的放到左边，将大于 pivot 的放到右边，将 pivot 放到中间。经过这一步骤之后，数组 p 到 r 之间的数据就被分成了三个部分，前面 p 到 q-1 之间都是小于 pivot 的，中间是 pivot，后面的 q+1 到 r 之间是大于 pivot 的。
+
