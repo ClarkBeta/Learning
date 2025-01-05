@@ -1963,3 +1963,124 @@ def radix_sort(data):
 ## 15 | 二分查找（上）：如何用最省内存的方式实现快速查找功能？
 假设我们有 1000 万个整数数据，每个数据占 8 个字节，如何设计数据结构和算法，快速判断某个整数是否出现在这 1000 万数据中？我们希望这个功能不要占用太多的内存空间，最多不要超过 100MB
 ### 1.无处不在的二分思想
+**二分查找针对的是一个有序的数据集合，查找思想有点类似分治思想。每次都通过跟区间的中间元素对比，将待查找的区间缩小为之前的一半，直到找到要查找的元素，或者区间被缩小为 0。**
+### 2.O(logn) 惊人的查找速度
+### 3.二分查找的递归与非递归实现
+最简单的情况就是**有序数组中不存在重复元素**，我们在其中用二分查找值等于给定值的数据。
+```java
+public int bsearch(int[] a, int n, int value) {
+  int low = 0;
+  int high = n - 1;
+
+  while (low <= high) {
+    int mid = (low + high) / 2;
+    if (a[mid] == value) {
+      return mid;
+    } else if (a[mid] < value) {
+      low = mid + 1;
+    } else {
+      high = mid - 1;
+    }
+  }
+
+  return -1;
+}
+```
+```python
+"""
+    Author: Wenru
+"""
+
+from typing import List
+
+def bsearch(nums: List[int], target: int) -> int:
+    """Binary search of a target in a sorted array
+    without duplicates. If such a target does not exist,
+    return -1, othewise, return its index.
+    """
+    low, high = 0, len(nums) - 1
+    while low <= high:
+        mid = low + (high - low) // 2
+        if nums[mid] == target:
+            return mid
+        elif nums[mid] < target:
+            low = mid + 1
+        else:
+            high = mid - 1
+    
+    return -1
+```
+low、high、mid 都是指数组下标，其中 low 和 high 表示当前查找的区间范围，初始 low=0， high=n-1。mid 表示[low, high]的中间位置。我们通过对比 a[mid]与 value 的大小，来更新接下来要查找的区间范围，直到找到或者区间缩小为 0，就退出。
+#### 1. 循环退出条件
+注意是 low<=high，而不是 low<high。
+
+因为左右都是闭区间所以low==hight的时候区间内还有一个数字 如果这个数字就是我们要找的的话 <的情形 不会继续判断的因此会出错
+#### 2.mid 的取值
+实际上，mid=(low+high)/2 这种写法是有问题的。因为如果 low 和 high 比较大的话，两者之和就有可能会溢出。改进的方法是将 mid 的计算方式写成 low+(high-low)/2。更进一步，如果要将性能优化到极致的话，我们可以将这里的除以 2 操作转化成位运算 low+((high-low)>>1)。因为相比除法运算来说，计算机处理位运算要快得多。
+#### 3.low 和 high 的更新
+low=mid+1，high=mid-1。注意这里的 +1 和 -1，如果直接写成 low=mid 或者 high=mid，就可能会发生死循环。比如，当 high=3，low=3 时，如果 a[3]不等于 value，就会导致一直循环不退出。
+
+**实际上，二分查找除了用循环来实现，还可以用递归来实现**
+```java
+// 二分查找的递归实现
+public int bsearch(int[] a, int n, int val) {
+  return bsearchInternally(a, 0, n - 1, val);
+}
+
+private int bsearchInternally(int[] a, int low, int high, int value) {
+  if (low > high) return -1;
+
+  int mid =  low + ((high - low) >> 1);
+  if (a[mid] == value) {
+    return mid;
+  } else if (a[mid] < value) {
+    return bsearchInternally(a, mid+1, high, value);
+  } else {
+    return bsearchInternally(a, low, mid-1, value);
+  }
+}
+```
+```python
+"""
+    Author: dreamkong
+"""
+
+from typing import List
+
+
+def bsearch(nums: List[int], target: int) -> int:
+    return bsearch_internally(nums, 0, len(nums)-1, target)
+
+
+def bsearch_internally(nums: List[int], low: int, high: int, target: int) -> int:
+    if low > high:
+        return -1
+
+    mid = low+int((high-low) >> 2)
+    if nums[mid] == target:
+        return mid
+    elif nums[mid] < target:
+        return bsearch_internally(nums, mid+1, high, target)
+    else:
+        return bsearch_internally(nums, low, mid-1, target)
+```
+### 4.二分查找应用场景的局限性
+**首先，二分查找依赖的是顺序表结构，简单点说就是数组。**原因是二分查找算法需要按照下标随机访问元素。
+
+**其次，二分查找针对的是有序数据。**
+
+二分查找对这一点的要求比较苛刻，数据必须是有序的。如果数据没有序，我们需要先排序。前面章节里我们讲到，排序的时间复杂度最低是 O(nlogn)。所以，如果我们针对的是一组静态的数据，没有频繁地插入、删除，我们可以进行一次排序，多次二分查找。这样排序的成本可被均摊，二分查找的边际成本就会比较低。
+
+但是，如果我们的数据集合有频繁的插入和删除操作，要想用二分查找，要么每次插入、删除操作之后保证数据仍然有序，要么在每次二分查找之前都先进行排序。针对这种动态数据集合，无论哪种方法，维护有序的成本都是很高的。
+
+**再次，数据量太小不适合二分查找。**如果要处理的数据量很小，完全没有必要用二分查找，顺序遍历就足够了。不过，这里有一个例外。如果数据之间的比较操作非常耗时，不管数据量大小，我都推荐使用二分查找。
+
+**最后，数据量太大也不适合二分查找。**二分查找的底层需要依赖数组这种数据结构，而数组为了支持随机访问的特性，要求内存空间连续，对内存的要求比较苛刻。比如，我们有 1GB 大小的数据，如果希望用数组来存储，那就需要 1GB 的连续内存空间。
+
+### 5.解答开篇
+如何在 1000 万个整数中快速查找某个整数？
+
+这个问题并不难。我们的内存限制是 100MB，每个数据大小是 8 字节，最简单的办法就是将数据存储在数组中，内存占用差不多是 80MB，符合内存的限制。借助今天讲的内容，我们可以先对这 1000 万数据从小到大排序，然后再利用二分查找算法，就可以快速地查找想要的数据了。
+
+二分查找底层依赖的是数组，除了数据本身之外，不需要额外存储其他信息，是最省内存空间的存储方式，所以刚好能在限定的内存大小下解决这个问题。
+## 16 | 二分查找（下）：如何快速定位IP对应的省份地址？
