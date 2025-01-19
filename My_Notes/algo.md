@@ -2084,3 +2084,234 @@ def bsearch_internally(nums: List[int], low: int, high: int, target: int) -> int
 
 二分查找底层依赖的是数组，除了数据本身之外，不需要额外存储其他信息，是最省内存空间的存储方式，所以刚好能在限定的内存大小下解决这个问题。
 ## 16 | 二分查找（下）：如何快速定位IP对应的省份地址？
+这个功能并不复杂，它是通过维护一个很大的 IP 地址库来实现的。地址库中包括 IP 地址范围和归属地的对应关系。
+
+当我们想要查询 202.102.133.13 这个 IP 地址的归属地时，我们就在地址库中搜索，发现这个 IP 地址落在[202.102.133.0, 202.102.133.255]这个地址范围内，那我们就可以将这个 IP 地址范围对应的归属地“山东东营市”显示给用户了。
+
+假设我们有 12 万条这样的 IP 区间与归属地的对应关系，如何快速定位出一个 IP 地址的归属地呢？
+
+为了简化讲解，今天的内容，我都以数据是从小到大排列为前提，如果你要处理的数据是从大到小排列的，解决思路也是一样的。
+### 1.变体一：查找第一个值等于给定值的元素
+上一节中的二分查找是最简单的一种，即有序数据集合中不存在重复的数据，我们在其中查找值等于某个给定值的数据。如果我们将这个问题稍微修改下，有序数据集合中存在重复的数据，我们希望找到第一个值等于给定值的数据，这样之前的二分查找代码还能继续工作吗？
+```java
+public int bsearch(int[] a, int n, int value) {
+  int low = 0;
+  int high = n - 1;
+  while (low <= high) {
+    int mid = low + ((high - low) >> 1);
+    if (a[mid] >= value) {
+      high = mid - 1;
+    } else {
+      low = mid + 1;
+    }
+  }
+  if (low < n && a[low]==value) return low;
+  else return -1;
+}
+```
+
+```java
+public int bsearch(int[] a, int n, int value) {
+  int low = 0;
+  int high = n - 1;
+  while (low <= high) {
+    int mid =  low + ((high - low) >> 1);
+    if (a[mid] > value) {
+      high = mid - 1;
+    } else if (a[mid] < value) {
+      low = mid + 1;
+    } else {
+      if ((mid == 0) || (a[mid - 1] != value)) return mid;
+      else high = mid - 1;
+    }
+  }
+  return -1;
+}
+```
+我来稍微解释一下这段代码。a[mid]跟要查找的 value 的大小关系有三种情况：大于、小于、等于。对于 a[mid]>value 的情况，我们需要更新 high= mid-1；对于 a[mid]<value 的情况，我们需要更新 low=mid+1。
+
+如果我们查找的是任意一个值等于给定值的元素，当 a[mid]等于要查找的值时，a[mid]就是我们要找的元素。但是，如果我们求解的是第一个值等于给定值的元素，当 a[mid]等于要查找的值时，我们就需要确认一下这个 a[mid]是不是第一个值等于给定值的元素。
+
+我们重点看第 11 行代码。如果 mid 等于 0，那这个元素已经是数组的第一个元素，那它肯定是我们要找的；如果 mid 不等于 0，但 a[mid]的前一个元素 a[mid-1]不等于 value，那也说明 a[mid]就是我们要找的第一个值等于给定值的元素。
+
+如果经过检查之后发现 a[mid]前面的一个元素 a[mid-1]也等于 value，那说明此时的 a[mid]肯定不是我们要查找的第一个值等于给定值的元素。那我们就更新 high=mid-1，因为要找的元素肯定出现在[low, mid-1]之间。
+
+**很多人都觉得变形的二分查找很难写，主要原因是太追求第一种那样完美、简洁的写法**
+### 2.变体二：查找最后一个值等于给定值的元素
+```java
+public int bsearch(int[] a, int n, int value) {
+  int low = 0;
+  int high = n - 1;
+  while (low <= high) {
+    int mid =  low + ((high - low) >> 1);
+    if (a[mid] > value) {
+      high = mid - 1;
+    } else if (a[mid] < value) {
+      low = mid + 1;
+    } else {
+      if ((mid == n - 1) || (a[mid + 1] != value)) return mid;
+      else low = mid + 1;
+    }
+  }
+  return -1;
+}
+```
+我们还是重点看第 11 行代码。如果 a[mid]这个元素已经是数组中的最后一个元素了，那它肯定是我们要找的；如果 a[mid]的后一个元素 a[mid+1]不等于 value，那也说明 a[mid]就是我们要找的最后一个值等于给定值的元素。
+
+如果我们经过检查之后，发现 a[mid]后面的一个元素 a[mid+1]也等于 value，那说明当前的这个 a[mid]并不是最后一个值等于给定值的元素。我们就更新 low=mid+1，因为要找的元素肯定出现在[mid+1, high]之间。
+### 3.变体三：查找第一个大于等于给定值的元素
+```java
+public int bsearch(int[] a, int n, int value) {
+  int low = 0;
+  int high = n - 1;
+  while (low <= high) {
+    int mid =  low + ((high - low) >> 1);
+    if (a[mid] >= value) {
+      if ((mid == 0) || (a[mid - 1] < value)) return mid;
+      else high = mid - 1;
+    } else {
+      low = mid + 1;
+    }
+  }
+  return -1;
+}
+```
+如果 a[mid]小于要查找的值 value，那要查找的值肯定在[mid+1, high]之间，所以，我们更新 low=mid+1。
+
+对于 a[mid]大于等于给定值 value 的情况，我们要先看下这个 a[mid]是不是我们要找的第一个值大于等于给定值的元素。如果 a[mid]前面已经没有元素，或者前面一个元素小于要查找的值 value，那 a[mid]就是我们要找的元素。这段逻辑对应的代码是第 7 行。
+
+如果 a[mid-1]也大于等于要查找的值 value，那说明要查找的元素在[low, mid-1]之间，所以，我们将 high 更新为 mid-1。
+### 4.变体四：查找最后一个小于等于给定值的元素
+```java
+public int bsearch7(int[] a, int n, int value) {
+  int low = 0;
+  int high = n - 1;
+  while (low <= high) {
+    int mid =  low + ((high - low) >> 1);
+    if (a[mid] > value) {
+      high = mid - 1;
+    } else {
+      if ((mid == n - 1) || (a[mid + 1] > value)) return mid;
+      else low = mid + 1;
+    }
+  }
+  return -1;
+}
+```
+### 5.解答开篇
+如何快速定位出一个 IP 地址的归属地？
+
+如果 IP 区间与归属地的对应关系不经常更新，我们可以先预处理这 12 万条数据，让其按照起始 IP 从小到大排序。如何来排序呢？我们知道，IP 地址可以转化为 32 位的整型数。所以，我们可以将起始地址，按照对应的整型值的大小关系，从小到大进行排序。
+
+当我们要查询某个 IP 归属地时，我们可以先通过二分查找，找到最后一个起始 IP 小于等于这个 IP 的 IP 区间，然后，检查这个 IP 是否在这个 IP 区间内，如果在，我们就取出对应的归属地显示；如果不在，就返回未查找到。
+
+变体的二分查找算法写起来非常烧脑，很容易因为细节处理不好而产生 Bug，这些容易出错的细节有：**终止条件、区间上下界更新方法、返回值选择。**
+### 6.代码
+python
+```python
+"""
+    Author: Wenru
+    Fix: nzjia
+"""
+
+from typing import List
+
+def bsearch_left(nums: List[int], target: int) -> int:
+    """Binary search of the index of the first element
+    equal to a given target in the ascending sorted array.
+    If not found, return -1.
+    """
+    low, high = 0, len(nums) - 1
+    while low <= high:
+        mid = low + (high - low) // 2
+        if nums[mid] < target:
+            low = mid + 1
+        else:
+            high = mid - 1
+    if low < len(nums) and nums[low] == target:
+        return low
+    else:
+        return -1
+
+
+def bsearch_right(nums: List[int], target: int) -> int:
+    """Binary search of the index of the last element
+    equal to a given target in the ascending sorted array.
+    If not found, return -1.
+    """
+    low, high = 0, len(nums) - 1
+    while low <= high:
+        mid = low + (high - low) // 2
+        if nums[mid] <= target:
+            low = mid + 1
+        else:
+            high = mid - 1
+    if high >= 0 and nums[high] == target:
+        return high
+    else:
+        return -1
+
+
+def bsearch_left_not_less(nums: List[int], target: int) -> int:
+    """Binary search of the index of the first element
+    not less than a given target in the ascending sorted array.
+    If not found, return -1.
+    """
+    low, high = 0, len(nums) - 1
+    while low <= high:
+        mid = low + (high - low) // 2
+        if nums[mid] < target:
+            low = mid + 1
+        else:
+            high = mid - 1
+    if low < len(nums) and nums[low] >= target:
+        return low
+    else:
+        return -1
+
+def bsearch_right_not_greater(nums: List[int], target: int) -> int:
+    """Binary search of the index of the last element
+    not greater than a given target in the ascending sorted array.
+    If not found, return -1.
+    """
+    low, high = 0, len(nums) - 1
+    while low <= high:
+        mid = low + (high - low) // 2
+        if nums[mid] <= target:
+            low = mid + 1
+        else:
+            high = mid - 1
+    if high >= 0 and nums[high] <= target:
+        return high
+    else:
+        return -1
+
+if __name__ == "__main__":
+    a = [1, 1, 2, 3, 4, 6, 7, 7, 7, 7, 10, 22]
+
+    print(bsearch_left(a, 0) == -1)
+    print(bsearch_left(a, 7) == 6)
+    print(bsearch_left(a, 30) == -1)
+
+    print(bsearch_right(a, 0) == -1)
+    print(bsearch_right(a, 7) == 9)
+    print(bsearch_right(a, 30) == -1)
+
+    print(bsearch_left_not_less(a, 0) == 0)
+    print(bsearch_left_not_less(a, 5) == 5)
+    print(bsearch_left_not_less(a, 30) == -1)
+
+    print(bsearch_right_not_greater(a, 0) == -1)
+    print(bsearch_right_not_greater(a, 6) == 5)
+    print(bsearch_right_not_greater(a, 30) == 11)
+```
+## 17 | 跳表：为什么Redis一定要用跳表来实现有序集合？
+我们只需要对链表稍加改造，就可以支持类似“二分”的查找算法。我们把改造之后的数据结构叫做**跳表**（Skip list）
+
+它确实是一种各方面性能都比较优秀的**动态数据结构**，可以支持快速地插入、删除、查找操作
+
+Redis 中的有序集合（Sorted Set）就是用跳表来实现的。如果你有一定基础，应该知道红黑树也可以实现快速地插入、删除和查找操作。那 Redis 为什么会选择用跳表来实现有序集合呢？ 
+### 1.如何理解“跳表”？
+对于一个单链表来讲，即便链表中存储的数据是有序的，如果我们要想在其中查找某个数据，也只能从头到尾遍历链表。这样查找效率就会很低，时间复杂度会很高，是 O(n)。
+
+那怎么来提高查找效率呢？如果像图中那样，对链表建立一级“索引”，查找起来是不是就会更快一些呢？每两个结点提取一个结点到上一级，我们把抽出来的那一级叫做**索引**或**索引层**。你可以看我画的图。图中的 down 表示 down 指针，指向下一级结点。
