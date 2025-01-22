@@ -4,10 +4,10 @@
 ### 1.1 I/O
 #### print
 ```python
-print('hello world')
-print('1','2','3')
-print(300)
-print(200+100)
+print('hello world') # Output: hello world
+print('1','2','3') # Output: 1 2 3
+print(300) # Output: 300
+print(200+100) # Output: 300
 ```
 #### input
 ```python
@@ -36,22 +36,22 @@ a = 60            # 60 = 0011 1100
 b = 13            # 13 = 0000 1101 
 c = 0
  
-c = a & b        # 12 = 0000 1100
+c = a & b        # Output: 12 = 0000 1100
 print ("1 - c 的值为：", c)#与
  
-c = a | b        # 61 = 0011 1101 
+c = a | b        # Output: 61 = 0011 1101 
 print ("2 - c 的值为：", c)#或
  
-c = a ^ b        # 49 = 0011 0001
+c = a ^ b        # Output: 49 = 0011 0001
 print ("3 - c 的值为：", c)#异或
  
-c = ~a           # -61 = 1100 0011
+c = ~a           # Output: -61 = 1100 0011
 print ("4 - c 的值为：", c)#按位取反（非）
  
-c = a << 2       # 240 = 1111 0000
+c = a << 2       # Output: 240 = 1111 0000
 print ("5 - c 的值为：", c)#左移 高位丢弃，低位补0
  
-c = a >> 2       # 15 = 0000 1111
+c = a >> 2       # Output: 15 = 0000 1111
 print ("6 - c 的值为：", c)#右移
 ```
 #### 浮点数
@@ -104,60 +104,61 @@ PI = 3.14159265359
 |中|x|01001110 00101101|11100100 10111000 10101101|
 #### Python的字符串
 ```python
-print(ord('A'))
-print(ord('中'))
+print(ord('A')) # Output: 65
+print(ord('中')) # Output: 20013
 
-print(chr(66))
-print(chr(25991))
-print('\u4e2d\u6587') #==>'中文'
+
+print(chr(66)) # Output: B
+print(chr(25991)) # Output: 文
+print('\u4e2d\u6587') # Output: 中文
 
 #把str变为以字节为单位的bytes
 a=b'abc' #bytes的每个字符都只占用一个字节
 
 #以Unicode表示的str通过encode()方法可以编码为指定的bytes
-print('abc'.encode('ascii'))
-print('中文'.encode('utf-8'))
+print('abc'.encode('ascii')) # Output: b'abc'
+print('中文'.encode('utf-8')) # Output: b'\xe4\xb8\xad\xe6\x96\x87'
 # print('中文'.encode('ascii')) 中文编码的范围超过了ASCII编码的范围
 #在bytes中，无法显示为ASCII字符的字节，用\x##显示
 
 #要把bytes变为str，就需要用decode()
-print(b'ABC'.decode('ascii'))
-print(b'\xe4\xb8\xad\xe6\x96\x87'.decode('utf-8'))
-print(b'\xe4\xb8\xad\xff'.decode('utf-8',errors='ignore'))
+print(b'ABC'.decode('ascii')) # Output: ABC
+print(b'\xe4\xb8\xad\xe6\x96\x87'.decode('utf-8')) # Output: 中文
+print(b'\xe4\xb8\xad\xff'.decode('utf-8',errors='ignore')) # Output: 中
 
 #计算str包含多少个字符，可以用len()函数
-print(len('ABC'))
-print(len('中文'))
+print(len('ABC')) # Output: 3
+print(len('中文')) # Output: 2
 #如果换成bytes，len()函数就计算字节数
-print(len(b'\xe4\xb8\xad\xe6\x96\x87'))
+print(len(b'\xe4\xb8\xad\xe6\x96\x87')) # Output: 6
 ```
 #### 格式化
 ```python
-print('hello,%s' % 'world')
-print('hello %s,you have%d' % ('Michael', 1000000))
+print('hello,%s' % 'world') # Output: hello,world
+print('hello %s,you have%d' % ('Michael', 1000000)) # Output: hello Michael,you have1000000
 #%d	整数 %f	浮点数 %s 字符串 %x 十六进制整数
 #%s永远起作用 %%来表示一个%
 
 #fromat
-print( 'Hello, {0}, 成绩提升了 {1:.1f}%'.format('小明', 17.125))
+print( 'Hello, {0}, 成绩提升了 {1:.1f}%'.format('小明', 17.125)) # Output: Hello, 小明, 成绩提升了 17.1%
 
 #f-string
 # 字符串如果包含{xxx}，就会以对应的变量替换
 r = 2.5
 s = 3.14 * r ** 2
-print(f'The area of a circle with radius {r} is {s:.2f}')
+print(f'The area of a circle with radius {r} is {s:.2f}') # Output: The area of a circle with radius 2.5 is 19.62
 ```
 ### 2.3 list,tuple
 #### list
 ```python
 a=[1,2,3]
 
-print(a)#->[1,2,3]
-print(len(a))#元素的个数 --> 3
-print(a[0])#索引从0开始 --> 1
+print(a) # Output: [1,2,3]
+print(len(a))#元素的个数   Output: 3
+print(a[0])#索引从0开始 Output: 1
 ##最后一个元素的索引是len(a) - 1
-print(a[-1])#-1最后一个元素 --> 3
-print(a[-2])#倒数第2个
+print(a[-1])#-1最后一个元素 Output: 3
+print(a[-2])#倒数第2个 Output: 2
 
 a.append(4)#追加元素到末尾
 a.insert(0,0)#把元素插入到指定的位置  list.insert(index,value)
@@ -166,7 +167,7 @@ a.pop(0)#pop(index)删除指定位置的元素
 a[0]=1#替换
 a=[1,'2',True]#数据类型可以不同
 a=[1,2,3,[4,5,6]]
-print(a[3][0])#-->4
+print(a[3][0]) # Output: 4
 a=[]#空
 ```
 #### tuple
@@ -174,13 +175,13 @@ a=[]#空
 a=(1,2)#tuple不可变
 
 a=(1)
-print(a)#-->1    int
+print(a) # Output: 1    int
 a=(1,)
-print(a)#-->(1,) tuple
+print(a) # Output: (1,) tuple
 
 a=(1,2,[3,4])
 a[2][0]=5
-print(a)#-->(1, 2, [5, 4])
+print(a) # Output: (1, 2, [5, 4])
 #tuple的每个元素，指向不变    变的不是tuple的元素
 ```
 ### 2.4 条件判断
@@ -230,9 +231,10 @@ match a_list:#匹配列表
 ### 2.6 循环
 #### for
 ```python
-print(list(range(5)))#[0, 1, 2, 3, 4]
+a_list=[1,2,3]
+print(list(range(5))) # Output: [0, 1, 2, 3, 4]
 for i in a_list:
-    print(i)#1  2  3
+    print(i) # Output: 1  2  3
 ```
 #### while
 ```python
@@ -250,14 +252,14 @@ while a<=0:
 for i in range(100):
     if i>10:
         break
-    print(i)#1,2,3,4,5,6,7,8,9,10
+    print(i) # Output: 1,2,3,4,5,6,7,8,9,10
 ```
 #### continue
 ```python
 for i in range(10):
     if i%2==0:
         continue
-    print(i)#奇数
+    print(i) # Output:1 3 5 7 9    奇数
 ```
 死循环Ctrl+C退出程序
 ### 2.7 dict,set
@@ -266,13 +268,13 @@ for i in range(10):
 a={1:1,2:2,3:3,4:4}
 print(a[1])
 
-a[5]=5#{1: 1, 2: 2, 3: 3, 4: 4, 5: 5}  
-a[0]=0#{1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 0: 0}
+a[5]=5 # Output: {1: 1, 2: 2, 3: 3, 4: 4, 5: 5}  
+a[0]=0 # Output: {1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 0: 0}
 
-a.get(3)#3 key不存在，返回None或者自己指定的value
-a.get(6,-1)#-1
+a.get(3) # Output: 3 key不存在，返回None或者自己指定的value
+a.get(6,-1) # Output: -1
 
-a.pop(1)#{2: 2, 3: 3, 4: 4, 5: 5, 0: 0}
+a.pop(1) # Output: {2: 2, 3: 3, 4: 4, 5: 5, 0: 0}
 ```
 
 dict的key必须是不可变对象
@@ -281,9 +283,12 @@ dict的key必须是不可变对象
 ```python
 key = [1, 2, 3]
 a[key] = 'a list'
+'''
+Output: 
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 TypeError: unhashable type: 'list'
+'''
 ```
 ##### 可变对象
 a = ['c', 'b', 'a'];a.sort() ---------->['a', 'b', 'c']
@@ -301,16 +306,16 @@ b=a.replace('a', 'A')--------------->'Abc'
 占用空间小，浪费内存很少。
 #### set 数学意义上的无序和无重复元素的集合
 ```python
-a=set([3,2,1,4])#{1, 2, 3, 4} 这个set内部有1,2,3,4这3个元素 不表示set是有序
+a=set([3,2,1,4]) # Output: {1, 2, 3, 4} 这个set内部有1,2,3,4这3个元素 不表示set是有序
 
-a=set([1,1,2,2,3,3])#{1, 2, 3}
+a=set([1,1,2,2,3,3]) # Output: {1, 2, 3}
 
-a.remove(1)#{2,3}
+a.remove(1) # Output: {2,3}
 
 a1=set([1,2,3])
 a2=set([2,3,4])
-print(a1&a2)#{2, 3}
-print(a1|a2)#{1, 2, 3, 4}
+print(a1&a2) # Output: {2, 3}
+print(a1|a2) # Output: {1, 2, 3, 4}
 ```
 ## 3.函数
 ### 3.1 调用函数
@@ -360,8 +365,8 @@ def abs_(a):
 def a(x,y):
     return x+y,x-y
 b,c=a(1,2)
-print(b,c)#3 -1
-print(a(1,2))#(3,-1)返回一个tuple
+print(b,c) # Output: 3 -1
+print(a(1,2)) # Output: (3,-1)返回一个tuple
 ```
 ### 3.3 函数的参数
 #### 位置参数
@@ -380,8 +385,8 @@ def power(x,n=2):
 def add_end(L=[]):
     L.append('END')
     return L
-print(add_end())#['END']
-print(add_end())#['END', 'END']
+print(add_end()) # Output: ['END']
+print(add_end()) # Output: ['END', 'END']
 ```
 Python函数在定义的时候，默认参数L的值就被计算出来了，即[]，因为默认参数L也是一个变量，它指向对象[]，每次调用该函数，如果改变了L的内容，则下次调用时，默认参数的内容就变了，不再是函数定义时的[]了。
 默认参数必须指向不变对象！
@@ -402,15 +407,15 @@ def sum(*x):#参数x接收到的是一个tuple
         res+=i
     return res
 a=[1,2,3]
-sum(*a)#把list或tuple的元素变成可变参数
+print(sum(*a)) # Output:6  把list或tuple的元素变成可变参数
 ```
 #### 关键字参数
 ```python
 #关键字参数在函数内部自动组装为一个dict
 def person(name,age,**kw):
     print('name:', name, 'age:', age, 'other:', kw)
-print(person('Bob', 35, city='Beijing'))#name: Bob age: 35 other: {'city': 'Beijing'}
-print(person('Adam', 45, gender='M', job='Engineer'))#name: Adam age: 45 other: {'gender': 'M', 'job': 'Engineer'}
+print(person('Bob', 35, city='Beijing')) # Output: name: Bob age: 35 other: {'city': 'Beijing'}
+print(person('Adam', 45, gender='M', job='Engineer')) # Output: name: Adam age: 45 other: {'gender': 'M', 'job': 'Engineer'}
 
 extra = {'city': 'Beijing', 'job': 'Engineer'}
 # print(person(**extra))
@@ -454,50 +459,51 @@ pass
 
 d={'a':1,'b':2,'c':3}
 for key in d:
-    print(key)
+    print(key) 
+# Output: a b c
 # 如果要迭代value，可以用for value in d.values()，如果要同时迭代key和value，可以用for k, v in d.items()
 
 for s in 'abcd':
-    print(s)#字符串也是可迭代对象
+    print(s) # Output: a b c d    字符串也是可迭代对象
 
 #判断一个对象是可迭代对象
 from collections.abc import Iterable
-print(isinstance('abc',Iterable))
+print(isinstance('abc',Iterable)) # Output: True
 
 #对list实现类似Java那样的下标循环
 for i,valve in enumerate([1,2,3]):#引用了两个变量
-    print(i,valve)
+    print(i,valve) # Output: a b c
 
 for x,y in [(1,1),(2,4),(3,9)]:
-    print(x,y)
+    print(x,y) # Output: a b c
 ```
 ### 4.3 列表生成式
 ```python
-#生成list [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-print(list(range(1,11)))
-#生成[1x1, 2x2, 3x3, ..., 10x10]
+print(list(range(1,11))) # Output: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
 L=[]
 for i in range(1,11):
     L.append(i*i)
 print(L)
+# Output: [1x1, 2x2, 3x3, ..., 10x10]
 
 #一行语句代替循环生成上面的list
-print([x*x for x in range(1,11)])
+print([x*x for x in range(1,11)]) # Output: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 #if判断
-print([x*x for x in range(1,11) if x%2 == 0])
+print([x*x for x in range(1,11) if x%2 == 0]) # Output: [4, 16, 36, 64, 100]
 #两层循环
-print([m+n for m in 'abc' for n in 'xyz'])
+print([m+n for m in 'abc' for n in 'xyz']) # Output: ['ax', 'ay', 'az', 'bx', 'by', 'bz', 'cx', 'cy', 'cz']
 
 import os
 print([a for a in os.listdir('.')])
 
 #使用两个变量
-print([x+str(y) for x,y in {'a':1,'b':2}.items()])
+print([x+str(y) for x,y in {'a':1,'b':2}.items()]) # Output: ['a1', 'b2']
 
-print([x for x in range(1, 11) if x % 2 == 0])#正常
-#[x for x in range(1, 11) if x % 2 == 0 else 0] 报错 (不能在最后的if加上else)
-print([x if x % 2 == 0 else -x for x in range(1, 11)])#正常
-#[x if x % 2 == 0 for x in range(1, 11)] 把if写在for前面必须加else，否则报错
+print([x for x in range(1, 11) if x % 2 == 0]) # Output: [2, 4, 6, 8, 10]
+#[x for x in range(1, 11) if x % 2 == 0 else 0]  Output: Error (不能在最后的if加上else)
+print([x if x % 2 == 0 else -x for x in range(1, 11)]) # Output: [-1, 2, -3, 4, -5, 6, -7, 8, -9, 10]
+#[x if x % 2 == 0 for x in range(1, 11)]  Output: Error  把if写在for前面必须加else，否则报错
 #for前面的if ... else是表达式，而for后面的if是过滤条件，不能带else
 ```
 ### 4.4 生成器
@@ -506,13 +512,13 @@ print([x if x % 2 == 0 else -x for x in range(1, 11)])#正常
 
 #要创建一个generator，有很多种方法。第一种方法很简单，只要把一个列表生成式的[]改成()，就创建了一个generator
 g=(x*x for x in range(1,11))
-print(g)# <generator object <genexpr> at 0x?????????????????>
+print(g) # Output: <generator object <genexpr> at 0x?????????????????>
 #如果要一个一个打印出来，可以通过next()函数获得generator的下一个返回值
-print(next(g))
-print(next(g))
-print(next(g))
-print(next(g))
-print(next(g))
+print(next(g)) # Output: 1
+print(next(g)) # Output: 4
+print(next(g)) # Output: 9
+print(next(g)) # Output: 16
+print(next(g)) # Output: 25
 
 #每次调用next(g)，就计算出g的下一个元素的值，直到计算到最后一个元素，没有更多的元素时，抛出StopIteration的错误
 #正确的方法是使用for循环
@@ -556,17 +562,17 @@ def odd():
     yield 3
 
 #请务必注意：调用generator函数会创建一个generator对象，多次调用generator函数会创建多个相互独立的generator。
-next(odd())
-next(odd())
-next(odd())
-#每次都返回1
+next(odd()) # Output: 1
+next(odd()) # Output: 1
+next(odd()) # Output: 1
+
 #odd()会创建一个新的generator对象
 #正确的写法是创建一个generator对象
 o=odd()
 
 for i in fib(6):
     print(i)
-#Result:
+# Output: 
 
 # 1
 # 1
@@ -590,9 +596,9 @@ while True:
 ```python
 from collections.abc import Iterator
 #list、dict、str虽然是Iterable，却不是Iterator
-print(isinstance((x*x for x in range (10)),Iterator))#True
+print(isinstance((x*x for x in range (10)),Iterator)) # Output: True
 #把list、dict、str等Iterable变成Iterator可以使用iter()函数
-print(isinstance(iter('abc'),Iterator))#True
+print(isinstance(iter('abc'),Iterator)) # Output: True
 
 #Iterator的计算是惰性的，只有在需要返回下一个数据时它才会计算
 #Iterator甚至可以表示一个无限大的数据流，例如全体自然数。而使用list是永远不可能存储全体自然数的。
@@ -616,13 +622,13 @@ while True:
 ## 5.函数式编程
 ### 5.1 高阶函数
 ```python
-x=abs #<built-in function abs>  函数本身也可以赋值给变量
+x=abs  # Output: <built-in function abs>  函数本身也可以赋值给变量
 #函数名其实就是指向函数的变量
 # abs=10 #abs(-10) error
 
 def add(x,y,f):
     return f(x)+f(y)
-print(add(-5,-6,abs))
+print(add(-5,-6,abs)) # Output: 11
 ```
 一个函数就接收另一个函数作为参数，这种函数就称之为高阶函数
 #### 5.1.1 map/reduce
@@ -632,8 +638,8 @@ print(add(-5,-6,abs))
 def f(x):
     return x*x
 r=list(map(f,[1,2,3,4,5,6,7,8,9]))
-print(r)#[1, 4, 9, 16, 25, 36, 49, 64, 81]
-print(list(map(str,[1,2,3,4,5,6,7,8,9])))
+print(r) # Output: [1, 4, 9, 16, 25, 36, 49, 64, 81]
+print(list(map(str,[1,2,3,4,5,6,7,8,9]))) # Output: ['1', '2', '3', '4', '5', '6', '7', '8', '9']
 ```
 ##### reduce
 ```python
@@ -642,11 +648,11 @@ print(list(map(str,[1,2,3,4,5,6,7,8,9])))
 from functools import reduce
 def add(x,y):
     return x+y
-print(reduce(add,[1,2,3,4,5]))#15
+print(reduce(add,[1,2,3,4,5])) # Output: 15
 #把序列[1, 3, 5, 7, 9]变换成整数13579
 def add2(x,y):
     return x*10+y
-print(reduce(add2,[1,2,3,4,5]))
+print(reduce(add2,[1,2,3,4,5])) # Output: 12345
 ```
 #### 5.1.2 filter
 ```python
@@ -654,17 +660,17 @@ print(reduce(add2,[1,2,3,4,5]))
 
 def odd(x):
     return x%2==1
-print(list(filter(odd,[1,2,3,4,5])))#[1, 3, 5]
+print(list(filter(odd,[1,2,3,4,5]))) # Output: [1, 3, 5]
 
 #由于filter()使用了惰性计算，所以只有在取filter()结果的时候，才会真正筛选并每次返回下一个筛出的元素。
 ```
 #### 5.1.3 sorted
 ```python
-print(sorted([1,2,3,-4,-5]))#[-5, -4, 1, 2, 3]
-print(sorted([1,2,3,-4,-5],key=abs))#[1, 2, 3, -4, -5]
-print(sorted(['bob', 'about', 'Zoo', 'Credit']))#['Credit', 'Zoo', 'about', 'bob']按照ASCII的大小比较
-print(sorted(['bob', 'about', 'Zoo', 'Credit'],key=str.lower))#['about', 'bob', 'Credit', 'Zoo']
-print(sorted(['bob', 'about', 'Zoo', 'Credit'],key=str.lower,reverse=True))# 反向
+print(sorted([1,2,3,-4,-5])) # Output: [-5, -4, 1, 2, 3]
+print(sorted([1,2,3,-4,-5],key=abs)) # Output: [1, 2, 3, -4, -5]
+print(sorted(['bob', 'about', 'Zoo', 'Credit'])) # Output: ['Credit', 'Zoo', 'about', 'bob']按照ASCII的大小比较
+print(sorted(['bob', 'about', 'Zoo', 'Credit'],key=str.lower)) # Output: ['about', 'bob', 'Credit', 'Zoo']
+print(sorted(['bob', 'about', 'Zoo', 'Credit'],key=str.lower,reverse=True)) # Output: ['Zoo', 'Credit', 'bob', 'about']  反向
 ```
 ### 5.2 返回函数
 ```python
@@ -675,13 +681,13 @@ def lazy_sum(*args):
             ax+=n
         return ax
     return sum
-f=lazy_sum(1,3,5,7,9) #<function lazy_Sum.<locals>.sum at 0x??????????????????>
-print(f())#25
+f=lazy_sum(1,3,5,7,9)  # Output: <function lazy_Sum.<locals>.sum at 0x??????????????????>
+print(f()) # Output: 25
 
 #在这个例子中，我们在函数lazy_sum中又定义了函数sum，并且，内部函数sum可以引用外部函数lazy_sum的参数和局部变量，当lazy_sum返回函数sum时，相关参数和变量都保存在返回的函数中，这种称为“闭包（Closure）”的程序结构拥有极大的威力。
 #我们调用lazy_sum()时，每次调用都会返回一个新的函数
 f1 = lazy_sum(1, 3, 5, 7, 9)
-f2 = lazy_sum(1, 3, 5, 7, 9)#f1!=f2
+f2 = lazy_sum(1, 3, 5, 7, 9) # f1!=f2
 ```
 #### 闭包
 ```python
@@ -695,7 +701,7 @@ def count():
     return fs
 
 f1, f2, f3 = count()
-print(f1(),f2(),f3())#9 9 9            事实上fs的内容<function count.<locals>.f at 0x0000023225699B20> <function count.<locals>.f at 0x000002322569A480> <function count.<locals>.f at 0x0000023225698860>
+print(f1(),f2(),f3()) # Output: 9 9 9            事实上fs的内容<function count.<locals>.f at 0x0000023225699B20> <function count.<locals>.f at 0x000002322569A480> <function count.<locals>.f at 0x0000023225698860>
 # 到3个函数都返回时，它们所引用的变量i已经变成了3，因此最终结果为9
 #返回闭包时牢记一点：返回函数不要引用任何循环变量，或者后续会发生变化的变量。
 
@@ -710,7 +716,7 @@ def count():
         fs.append(g(i))
     return fs
 f1, f2, f3 = count()
-print(f1(),f2(),f3())
+print(f1(),f2(),f3()) # Output: 1 4 9
 ```
 #### nonlocal
 ```python
@@ -723,8 +729,8 @@ def inc():
     return fn
 
 f = inc()
-print(f()) # 1
-print(f()) # 1
+print(f()) # Output: 1
+print(f()) # Output: 1
 
 def inc():
     x = 0
@@ -735,8 +741,8 @@ def inc():
     return fn
 
 f = inc()
-print(f()) # 1
-print(f()) # 2
+print(f()) # Output: 1
+print(f()) # Output: 2
 
 #原因是x作为局部变量并没有初始化，直接计算x+1是不行的。但我们其实是想引用inc()函数内部的x，所以需要在fn()函数内部加一个nonlocal x的声明。加上这个声明后，解释器把fn()的x看作外层函数的局部变量，它已经被初始化了，可以正确计算x+1。
 #使用闭包时，对外层变量赋值前，需要先使用nonlocal声明该变量不是当前函数的局部变量。
@@ -745,7 +751,7 @@ print(f()) # 2
 #### lambda
 ```python
 # lambda
-print(list(map(lambda x: x * x, [1, 2, 3, 4, 5, 6, 7, 8, 9])))#[1, 4, 9, 16, 25, 36, 49, 64, 81]
+print(list(map(lambda x: x * x, [1, 2, 3, 4, 5, 6, 7, 8, 9]))) # Output: [1, 4, 9, 16, 25, 36, 49, 64, 81]
 
 # 通过对比可以看出，匿名函数lambda x: x * x实际上就是：
 # def f(x):
@@ -771,7 +777,7 @@ def log(func):
 @log
 def a():
     print('11111')
-a()
+a() # Output: 
 #相当于a = log(a)
 
 #如果decorator本身需要传入参数
@@ -786,9 +792,9 @@ def log(text):
 @log('awa')
 def a():
     print('11111')
-a()
+a() # Output: awa 111111
 #相当于now = log('execute')(now)
-print(a.__name__)#'w'
+print(a.__name__) # Output: 'w'
 #因为返回的那个wrapper()函数名字就是'wrapper'，所以，需要把原始函数的__name__等属性复制到wrapper()函数中，否则，有些依赖函数签名的代码执行就会出错。
 ```
 ### 5.5 偏函数
@@ -816,17 +822,18 @@ max2(5, 6, 7)
 如果不同的人编写的模块名相同怎么办？为了避免模块名冲突，Python又引入了按目录来组织模块的方法，称为包（Package）
 
 现在，假设我们的abc和xyz这两个模块名字与其他模块冲突了，于是我们可以通过包来组织模块，避免冲突。方法是选择一个顶层包名，比如mycompany，按照如下目录存放：
-
+```
 mycompany
 ├─ __init__.py
 ├─ abc.py
 └─ xyz.py
+```
 引入了包以后，只要顶层的包名不与别人冲突，那所有模块都不会与别人冲突。现在，abc.py模块的名字就变成了mycompany.abc，类似的，xyz.py的模块名变成了mycompany.xyz。
 
 请注意，每一个包目录下面都会有一个__init__.py的文件，这个文件是必须存在的，否则，Python就把这个目录当成普通目录，而不是一个包。__init__.py可以是空文件，也可以有Python代码，因为__init__.py本身就是一个模块，而它的模块名就是mycompany。
 
 类似的，可以有多级目录，组成多级层次的包结构。比如如下的目录结构：
-
+```
 mycompany
  ├─ web
  │  ├─ __init__.py
@@ -835,6 +842,7 @@ mycompany
  ├─ __init__.py
  ├─ abc.py
  └─ utils.py
+ ```
 文件www.py的模块名就是mycompany.web.www，两个文件utils.py的模块名分别是mycompany.utils和mycompany.web.utils。
 
 自己创建模块时要注意命名，不能和Python自带的模块名称冲突。例如，系统自带了sys模块，自己的模块就不可命名为sys.py，否则将无法导入系统自带的sys模块。
@@ -872,7 +880,7 @@ if __name__=='__main__':
 if __name__=='__main__':
     test()
 ```
-当我们在命令行运行hello模块文件时，Python解释器把一个特殊变量__name__置为__main__，而如果在其他地方导入该hello模块时，if判断将失败，因此，这种if测试可以让一个模块通过命令行运行时执行一些额外的代码，最常见的就是运行测试。
+当我们在命令行运行hello模块文件时，Python解释器把一个特殊变量__name__置为__main__，而如果在其他地方导入该hello模块时，if判断将失败，因此，这种if测试可以让**一个模块通过命令行运行时执行一些额外的代码**，最常见的就是运行测试。
 #### 作用域
 在一个模块中，我们可能会定义很多函数和变量，但有的函数和变量我们希望给别人使用，有的函数和变量我们希望仅仅在模块内部使用。在Python中，是通过_前缀来实现的。
 
@@ -925,8 +933,8 @@ class student(object):#定义类
         else:
             return 'C'
 bart=student('Bart Simpson', 59)#创建实例
-bart.get_name()
-bart.get_score()
+bart.get_name() # Output: 
+bart.get_score() # Output: 
 #和普通的函数相比，在类中定义的函数只有一点不同，就是第一个参数永远是实例变量self，并且，调用时，不用传递该参数。除此之外，类的方法和普通函数没有什么区别，所以，你仍然可以用默认参数、可变参数、关键字参数和命名关键字参数。
 ```
 #### 数据封装
@@ -937,9 +945,9 @@ bart.print_score()
 我们从外部看Student类，就只需要知道，创建实例需要给出name和score，而如何打印，都是在Student类的内部定义的，这些数据和逻辑被“封装”起来了，调用很容易，但却不用知道内部实现的细节。
 ### 7.2 访问限制
 ```python
-bart.get_name()#'Bart Simpson'
+bart.get_name() # Output: 'Bart Simpson'
 bart.__name='abc'
-bart.get_name()#'Bart Simpson'
+bart.get_name() # Output: 'Bart Simpson'
 #表面上看，外部代码“成功”地设置了__name变量，但实际上这个__name变量和class内部的__name变量不是一个变量！内部的__name变量已经被Python解释器自动改成了_Student__name，而外部代码给bart新增了一个__name变量。不信试试：
 ```
 ### 7.3 继承和多态
@@ -950,13 +958,13 @@ class animal(object):
 class dog(animal):
     pass
 dogg=dog()
-dogg.run()#继承
+dogg.run() # Output: running      继承
 class cat(animal):
     def run(self):
         print('cat running')
 catt=cat()
-catt.run()#当子类和父类都存在相同的run()方法时，我们说，子类的run()覆盖了父类的run()，在代码运行的时候，总是会调用子类的run()。这样，我们就获得了继承的另一个好处：多态。
-print(isinstance(catt,animal))#True
+catt.run() # Output: cat running        当子类和父类都存在相同的run()方法时，我们说，子类的run()覆盖了父类的run()，在代码运行的时候，总是会调用子类的run()。这样，我们就获得了继承的另一个好处：多态。
+print(isinstance(catt,animal)) # Output: True
 #在继承关系中，如果一个实例的数据类型是某个子类，那它的数据类型也可以被看做是父类
 
 def run_twice(animal):
@@ -979,9 +987,9 @@ run_twice(Tortoise())
 ### 7.4 获取对象信息
 #### type
 ```python
-print(type(123))
-print(type('abc'))
-print(type(abs))
+print(type(123)) # Output: <class 'int'>
+print(type('abc')) # Output: <class 'str'>
+print(type(abs)) # Output: <class 'builtin_function_or_method'>
 import types
 # 判断基本数据类型可以直接写int，str等，但如果要判断一个对象是否是函数怎么办？可以使用types模块中定义的常量
 ```
@@ -989,23 +997,23 @@ import types
 ```python
 #能用type()判断的基本类型也可以用isinstance()判断
 #并且还可以判断一个变量是否是某些类型中的一种，比如下面的代码就可以判断是否是list或者tuple：
-print(isinstance([1,2,3],(list,tuple)))#True
+print(isinstance([1,2,3],(list,tuple))) # Output: True
 #总是优先使用isinstance()判断类型，可以将指定类型及其子类“一网打尽”。
 ```
 #### dir()
 ```python
 #如果要获得一个对象的所有属性和方法，可以使用dir()函数，它返回一个包含字符串的list，比如，获得一个str对象的所有属性和方法
-print(dir('abc'))
+print(dir('abc')) # Output: ['__add__', '__class__', '__contains__', '__delattr__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__getitem__', '__getnewargs__', '__getstate__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__iter__', '__le__', '__len__', '__lt__', '__mod__', '__mul__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__rmod__', '__rmul__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', 'capitalize', 'casefold', 'center', 'count', 'encode', 'endswith', 'expandtabs', 'find', 'format', 'format_map', 'index', 'isalnum', 'isalpha', 'isascii', 'isdecimal', 'isdigit', 'isidentifier', 'islower', 'isnumeric', 'isprintable', 'isspace', 'istitle', 'isupper', 'join', 'ljust', 'lower', 'lstrip', 'maketrans', 'partition', 'removeprefix', 'removesuffix', 'replace', 'rfind', 'rindex', 'rjust', 'rpartition', 'rsplit', 'rstrip', 'split', 'splitlines', 'startswith', 'strip', 'swapcase', 'title', 'translate', 'upper', 'zfill']
 #类似__xxx__的属性和方法在Python中都是有特殊用途的，比如__len__方法返回长度。在Python中，如果你调用len()函数试图获取一个对象的长度，实际上，在len()函数内部，它自动去调用该对象的__len__()方法
 #下面的代码是等价的
-print(len('abc'))
-print('abc'.__len__())
+print(len('abc')) # Output: 3
+print('abc'.__len__()) # Output: 3
 
 class a(object):
     def __len__(self):
         return 2
 b=a()
-print(len(b))#2
+print(len(b)) # Output: 2
 
 class myobject(object):
     def __init__(self):
@@ -1013,30 +1021,30 @@ class myobject(object):
     def power(self):
         return self.x*self.x
 a_object=myobject()
-print(hasattr(a_object,'x'))# 有属性'x'吗？ true
-print(hasattr(a_object,'y'))# 有属性'y'吗？ false
+print(hasattr(a_object,'x'))# 有属性'x'吗？  Output: true
+print(hasattr(a_object,'y'))# 有属性'y'吗？  Output: false
 setattr(a_object,'y',1)# 设置一个属性'y'
-print(hasattr(a_object,'y'))#true
-print(getattr(a_object,'y'))#1
-print(a_object.y)#1
-print(getattr(a_object,'z',404))#可以传入一个default参数，如果属性不存在，就返回默认值         404
+print(hasattr(a_object,'y')) # Output: true
+print(getattr(a_object,'y')) # Output: 1
+print(a_object.y) # Output: 1
+print(getattr(a_object,'z',404)) # Output: 404  可以传入一个default参数，如果属性不存在，就返回默认值         404
 
 #获得对象的方法
-print(hasattr(a_object,'power'))# 有属性'power'吗？ true
-print(getattr(a_object,'power'))#获取属性'power' <bound method myobject.power of <__main__.myobject object at 0x000001974998CBC0>>
+print(hasattr(a_object,'power'))# 有属性'power'吗？  Output: true
+print(getattr(a_object,'power'))#获取属性'power'  Output: <bound method myobject.power of <__main__.myobject object at 0x000001974998CBC0>>
 ```
 ### 7.5 实例属性和类属性
 ```python
 class student(object):
     name='awa'
 s=student()
-print(s.name)# 打印name属性，因为实例并没有name属性，所以会继续查找class的name属性  awa
-print(student.name)# 打印类的name属性  awa
+print(s.name)# 打印name属性，因为实例并没有name属性，所以会继续查找class的name属性    Output: awa
+print(student.name)# 打印类的name属性   Output: awa
 s.name='qwq'# 给实例绑定name属性
-print(s.name)# 由于实例属性优先级比类属性高，因此，它会屏蔽掉类的name属性 qwq
-print(student.name)# 但是类属性并未消失，用Student.name仍然可以访问 awa
+print(s.name)# 由于实例属性优先级比类属性高，因此，它会屏蔽掉类的name属性   Output: qwq
+print(student.name)# 但是类属性并未消失，用Student.name仍然可以访问   Output: awa
 del s.name# 如果删除实例的name属性
-print(s.name)# 再次调用s.name，由于实例的name属性没有找到，类的name属性就显示出来了 awa
+print(s.name)# 再次调用s.name，由于实例的name属性没有找到，类的name属性就显示出来了   Output: awa
 #从上面的例子可以看出，在编写程序的时候，千万不要对实例属性和类属性使用相同的名字，因为相同名称的实例属性将屏蔽掉类属性，但是当你删除实例属性后，再使用相同的名称，访问到的将是类属性。
 ```
 ## 8.面向对象高级编程
@@ -1046,14 +1054,14 @@ class student(object):
     pass
 s=student()
 s.name='111'# 动态给实例绑定一个属性
-print(s.name)#111
+print(s.name) # Output: 111
 
 def set_age(self,age):# 定义一个函数作为实例方法
     self.age=age
 from types import MethodType
 s.set_age=MethodType(set_age,s)# 给实例绑定一个方法
 s.set_age(25)# 调用实例方法
-print(s.age)
+print(s.age) # Output: 25
 
 # 只允许对Student实例添加name和age属性
 class student(object):
@@ -1091,17 +1099,20 @@ student = Student()
 # 设置属性
 student.age = 18
 """
+Output: 
 设置属性时执行的代码
 """
 # 获取属性
 print('学生年龄为：' + str(student.age))
 """
+Output: 
 获取属性时执行的代码
 学生年龄为：18
 """
 # 删除属性
 del student.age
 """
+Output: 
 删除属性时执行的代码
 """
 
@@ -1131,7 +1142,7 @@ class Flyable(object):
 class Dog(Mammal,Runnable):#多重继承
     pass
 class Bat(Mammal,Flyable):#多重继承
-    pass#
+    pass
 class Parrot(Bird):
     pass
 class Ostrich(Bird):
@@ -1141,7 +1152,7 @@ class Ostrich(Bird):
 #在设计类的继承关系时，通常，主线都是单一继承下来的，例如，Ostrich继承自Bird。但是，如果需要“混入”额外的功能，通过多重继承就可以实现，比如，让Ostrich除了继承自Bird外，再同时继承Runnable。这种设计通常称之为MixIn。
 ```
 ### 8.4 定制类
-#### __str__
+#### \_\_str\_\_
 ```python
 class student(object):
     def __init__(self,name):
@@ -1151,11 +1162,11 @@ class student(object):
                     #直接敲变量不用print，打印出来的实例还是不好看
     __repr__=__str__#两者的区别是__str__()返回用户看到的字符串，而__repr__()返回程序开发者看到的字符串，也就是说，__repr__()是为调试服务的。
                     #解决办法是再定义一个__repr__()。但是通常__str__()和__repr__()代码都是一样的，所以，有个偷懒的写法
-print(student('111'))#111
+print(student('111')) # Output: 111
 s=student('222')
-print(s)#222
+print(s) # Output: 222
 ```
-#### __iter__
+#### \_\_iter\_\_
 ```python
 #如果一个类想被用于for ... in循环，类似list或tuple那样，就必须实现一个__iter__()方法，该方法返回一个迭代对象，然后，Python的for循环就会不断调用该迭代对象的__next__()方法拿到循环的下一个值，直到遇到StopIteration错误时退出循环。
 class fib(object):
@@ -1170,8 +1181,9 @@ class fib(object):
         return self.a
 for i in fib():
     print(i)
+# Output: 1 1 2 ...... 6765
 ```
-#### __getitem__
+#### \_\_getitem\_\_
 ```python
 #Fib实例虽然能作用于for循环，看起来和list有点像，但是，把它当成list来使用还是不行
 class Fib(object):
@@ -1194,7 +1206,7 @@ class Fib(object):
                 a, b = b, a + b
             return L
 ```
-#### __getattr__
+#### \_\_getattr\_\_
 ```python
 #动态返回一个属性
 class Student(object):
@@ -1209,11 +1221,12 @@ class Student(object):
             return lambda:25
         #此外，注意到任意调用如s.abc都会返回None，这是因为我们定义的__getattr__默认返回就是None。
         raise AttributeError('\'Student\' object has no attribute \'%s\'' % attr)
-print(s.score)
-print(s.age())
+s=Student()
+print(s.score) # Output: 99
+print(s.age()) # Output: 25
 #这实际上可以把一个类的所有属性和方法调用全部动态化处理了，不需要任何特殊手段。
 ```
-#### __call__
+#### \_\_call\_\_
 ```python
 #直接在实例本身上调用
 class Student(object):
@@ -1223,18 +1236,18 @@ class Student(object):
     def __call__(self):
         print('My name is %s.' % self.name)
 s = Student('Michael')
-s()#My name is Michael.
+s() # Output: My name is Michael.
 #把对象看成函数，把函数看成对象
 #怎么判断一个变量是对象还是函数呢？其实，更多的时候，我们需要判断一个对象是否能被调用，能被调用的对象就是一个Callable对象
-print(callable(s))#true
-print(callable(10))#false
+print(callable(s)) # Output: true
+print(callable(10)) # Output: false
 ```
 ### 8.5 使用枚举类
 ```python
 from enum import Enum
 Month = Enum('Month', ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'))
 for name, member in Month.__members__.items():
-    print(name, '=>', member, ',', member.value)
+    print(name, '=>', member, ',', member.value) # Output: 
 #value属性则是自动赋给成员的int常量，默认从1开始计数。
 
 #如果需要更精确地控制枚举类型，可以从Enum派生出自定义类：
@@ -1336,7 +1349,7 @@ def main():
     except Exception as e:
         logging.exception(e)
 
-main()
+main() # Output: ZeroDivisionError: division by zero
 print('END')
 #同样是出错，但程序打印完错误信息后会继续执行，并正常退出
 ```
@@ -1353,7 +1366,7 @@ def foo(s):
         raise FooError('invalid value: %s' % s)
     return 10 / n
 
-foo('0')
+foo('0') # Output: FooError: invalid value: 0
 
 #另一种错误处理的方式
 def foo(s):
@@ -1369,7 +1382,7 @@ def bar():
         print('ValueError!')
         raise
 
-bar()
+bar() # Output: ValueError!
 
 # 其实这种错误处理方式不但没病，而且相当常见。捕获错误目的只是记录一下，便于后续追踪。但是，由于当前函数不知道应该怎么处理该错误，所以，最恰当的方式是继续往上抛，让顶层调用者去处理。好比一个员工处理不了一个问题时，就把问题抛给他的老板，如果他的老板也处理不了，就一直往上抛，最终会抛给CEO去处理。
 
@@ -1388,7 +1401,7 @@ def foo(s):
     return 10 / n
 
 def main():
-    foo('0')
+    foo('0') # Output: 
 #assert的意思是，表达式n != 0应该是True，否则，根据程序运行的逻辑，后面的代码肯定会出错
 ```
 #### logging
@@ -1397,8 +1410,8 @@ import logging
 logging.basicConfig(level=logging.INFO)
 s = '0'
 n = int(s)
-logging.info('n = %d' % n)
-print(10 / n)
+logging.info('n = %d' % n) # Output: INFO:root:n = 0
+print(10 / n) # Output: ZeroDivisionError: division by zero
 # 这就是logging的好处，它允许你指定记录信息的级别，有debug，info，warning，error等几个级别，当我们指定level=INFO时，logging.debug就不起作用了。同理，指定level=WARNING后，debug和info就不起作用了。这样一来，你可以放心地输出不同级别的信息，也不用删除，最后统一控制输出哪个级别的信息。
 # logging的另一个好处是通过简单的配置，一条语句可以同时输出到不同的地方，比如console和文件。
 ```
@@ -1453,7 +1466,7 @@ with open('1.txt','w') as f:
 from io import StringIO
 f=StringIO()
 f.write('abc123!@#')
-print(f.getvalue())#getvalue()方法用于获得写入后的str
+print(f.getvalue()) # Output: abc123!@#    getvalue()方法用于获得写入后的str
 #要读取StringIO，可以用一个str初始化StringIO，然后，像读文件一样读取
 ```
 #### BytesIO
@@ -1461,7 +1474,7 @@ print(f.getvalue())#getvalue()方法用于获得写入后的str
 from io import BytesIO
 f=BytesIO()
 f.write('啊'.encode('utf-8'))
-print(f.getvalue())
+print(f.getvalue()) # Output: b'\xe5\x95\x8a'
 ```
 ### 10.3 操作文件和目录
 ```python
@@ -1515,14 +1528,15 @@ print(d)
 
 import json
 d = dict(name='Bob', age=20, score=88)
-print(json.dumps(d))#'{"age": 20, "score": 88, "name": "Bob"}'
+print(json.dumps(d)) # Output: '{"age": 20, "score": 88, "name": "Bob"}'
 
 json_str = '{"age": 20, "score": 88, "name": "Bob"}'
-print(json.loads(json_str))#{'age': 20, 'score': 88, 'name': 'Bob'}
+print(json.loads(json_str)) # Output: {'age': 20, 'score': 88, 'name': 'Bob'}
 ```
 #### JSON进阶
 ```python
 #Python的dict对象可以直接序列化为JSON的{}，不过，很多时候，我们更喜欢用class表示对象，比如定义Student类，然后序列化
+import json
 class Student(object):
     def __init__(self, name, age, score):
         self.name = name
@@ -1535,15 +1549,15 @@ def student2dict(std):
         'age': std.age,
         'score': std.score
     }
-print(json.dumps(s, default=student2dict))
-print(json.dumps(s, default=lambda obj: obj.__dict__))#把任意class的实例变为dict
+print(json.dumps(s, default=student2dict)) # Output: {"name": "Bob", "age": 20, "score": 88}
+print(json.dumps(s, default=lambda obj: obj.__dict__)) # Output:  {"name": "Bob", "age": 20, "score": 88}    把任意class的实例变为dict
 #因为通常class的实例都有一个__dict__属性，它就是一个dict，用来存储实例变量。
 
 #同样的道理，如果我们要把JSON反序列化为一个Student对象实例，loads()方法首先转换出一个dict对象，然后，我们传入的object_hook函数负责把dict转换为Student实例
 def dict2student(d):
     return Student(d['name'], d['age'], d['score'])
 json_str = '{"age": 20, "score": 88, "name": "Bob"}'
-print(json.loads(json_str, object_hook=dict2student))
+print(json.loads(json_str, object_hook=dict2student)) # Output: <__main__.Student object at 0x000001890ECBEE40>
 ```
 ## 11.进程和线程
 ### 11.1 多进程
@@ -1960,143 +1974,9 @@ print('worker exit.')
 # 注意Queue的作用是用来传递任务和接收结果，每个任务的描述数据量要尽量小。比如发送一个处理日志文件的任务，就不要发送几百兆的日志文件本身，而是发送日志文件存放的完整路径，由Worker进程再去共享的磁盘上读取文件。
 ```
 ## 12.正则表达式
-```python
-# 在正则表达式中，如果直接给出字符，就是精确匹配。用\d可以匹配一个数字，\w可以匹配一个字母或数字，所以：
-# '00\d'可以匹配'007'，但无法匹配'00A'；
-# '\d\d\d'可以匹配'010'；
-# '\w\w\d'可以匹配'py3'；
-
-# .可以匹配任意字符，所以：
-# 'py.'可以匹配'pyc'、'pyo'、'py!'等等。
-# 要匹配变长的字符，在正则表达式中，用*表示任意个字符（包括0个），用+表示至少一个字符，用?表示0个或1个字符，用{n}表示n个字符，用{n,m}表示n-m个字符：
-
-# 来看一个复杂的例子：\d{3}\s+\d{3,8}。
-# 我们来从左到右解读一下：
-# \d{3}表示匹配3个数字，例如'010'；
-# \s可以匹配一个空格（也包括Tab等空白符），所以\s+表示至少有一个空格，例如匹配' '，' '等；
-# \d{3,8}表示3-8个数字，例如'1234567'。
-# 综合起来，上面的正则表达式可以匹配以任意个空格隔开的带区号的电话号码。
-# 如果要匹配'010-12345'这样的号码呢？由于'-'是特殊字符，在正则表达式中，要用'\'转义，所以，上面的正则是\d{3}\-\d{3,8}。
-# 但是，仍然无法匹配'010 - 12345'，因为带有空格。所以我们需要更复杂的匹配方式。
-
-#进阶
-
-# 要做更精确地匹配，可以用[]表示范围，比如：
-# [0-9a-zA-Z\_]可以匹配一个数字、字母或者下划线；
-# [0-9a-zA-Z\_]+可以匹配至少由一个数字、字母或者下划线组成的字符串，比如'a100'，'0_Z'，'Py3000'等等；
-# [a-zA-Z\_][0-9a-zA-Z\_]*可以匹配由字母或下划线开头，后接任意个由一个数字、字母或者下划线组成的字符串，也就是Python合法的变量；
-# [a-zA-Z\_][0-9a-zA-Z\_]{0, 19}更精确地限制了变量的长度是1-20个字符（前面1个字符+后面最多19个字符）。
-# A|B可以匹配A或B，所以(P|p)ython可以匹配'Python'或者'python'。
-# ^表示行的开头，^\d表示必须以数字开头。
-# $表示行的结束，\d$表示必须以数字结束。
-# 你可能注意到了，py也可以匹配'python'，但是加上^py$就变成了整行匹配，就只能匹配'py'了。
-
-#re模块
-import re
-# 有了准备知识，我们就可以在Python中使用正则表达式了。Python提供re模块，包含所有正则表达式的功能。由于Python的字符串本身也用\转义，所以要特别注意：
-
-s = 'ABC\\-001' # Python的字符串
-# 对应的正则表达式字符串变成 'ABC\-001'
-# 因此我们强烈建议使用Python的r前缀，就不用考虑转义的问题了：
-
-s = r'ABC\-001' # Python的字符串
-# 对应的正则表达式字符串不变：'ABC\-001'
-# 先看看如何判断正则表达式是否匹配：
-
-# >>> import re
-# >>> re.match(r'^\d{3}\-\d{3,8}$', '010-12345')
-# <_sre.SRE_Match object; span=(0, 9), match='010-12345'>
-# >>> re.match(r'^\d{3}\-\d{3,8}$', '010 12345')
-# >>>
-# match()方法判断是否匹配，如果匹配成功，返回一个Match对象，否则返回None。常见的判断方法就是：
-
-test = '用户输入的字符串'
-if re.match(r'正则表达式', test):
-    print('ok')
-else:
-    print('failed')
-
-# 切分字符串
-# 用正则表达式切分字符串比用固定的字符更灵活，请看正常的切分代码：
-
-# >>> 'a b   c'.split(' ')
-# ['a', 'b', '', '', 'c']
-# 嗯，无法识别连续的空格，用正则表达式试试：
-
-# >>> re.split(r'\s+', 'a b   c')
-# ['a', 'b', 'c']
-# 无论多少个空格都可以正常分割。加入,试试：
-
-# >>> re.split(r'[\s\,]+', 'a,b, c  d')
-# ['a', 'b', 'c', 'd']
-# 再加入;试试：
-
-# >>> re.split(r'[\s\,\;]+', 'a,b;; c  d')
-# ['a', 'b', 'c', 'd']
-# 如果用户输入了一组标签，下次记得用正则表达式来把不规范的输入转化成正确的数组。
-
-#分组
-
-# 除了简单地判断是否匹配之外，正则表达式还有提取子串的强大功能。用()表示的就是要提取的分组（Group）。比如：
-
-# ^(\d{3})-(\d{3,8})$分别定义了两个组，可以直接从匹配的字符串中提取出区号和本地号码：
-
-# >>> m = re.match(r'^(\d{3})-(\d{3,8})$', '010-12345')
-# >>> m
-# <_sre.SRE_Match object; span=(0, 9), match='010-12345'>
-# >>> m.group(0)
-# '010-12345'
-# >>> m.group(1)
-# '010'
-# >>> m.group(2)
-# '12345'
-# 如果正则表达式中定义了组，就可以在Match对象上用group()方法提取出子串来。
-
-# 注意到group(0)永远是与整个正则表达式相匹配的字符串，group(1)、group(2)……表示第1、2、……个子串。
-
-# 提取子串非常有用。来看一个更凶残的例子：
-
-# >>> t = '19:05:30'
-# >>> m = re.match(r'^(0[0-9]|1[0-9]|2[0-3]|[0-9])\:(0[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]|[0-9])\:(0[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]|[0-9])$', t)
-# >>> m.groups()
-# ('19', '05', '30')
-# 这个正则表达式可以直接识别合法的时间。但是有些时候，用正则表达式也无法做到完全验证，比如识别日期：
-
-# '^(0[1-9]|1[0-2]|[0-9])-(0[1-9]|1[0-9]|2[0-9]|3[0-1]|[0-9])$'
-# 对于'2-30'，'4-31'这样的非法日期，用正则还是识别不了，或者说写出来非常困难，这时就需要程序配合识别了。
-
-#贪婪匹配
-
-# 最后需要特别指出的是，正则匹配默认是贪婪匹配，也就是匹配尽可能多的字符。举例如下，匹配出数字后面的0：
-
-# >>> re.match(r'^(\d+)(0*)$', '102300').groups()
-# ('102300', '')
-# 由于\d+采用贪婪匹配，直接把后面的0全部匹配了，结果0*只能匹配空字符串了。
-
-# 必须让\d+采用非贪婪匹配（也就是尽可能少匹配），才能把后面的0匹配出来，加个?就可以让\d+采用非贪婪匹配：
-
-# >>> re.match(r'^(\d+?)(0*)$', '102300').groups()
-# ('1023', '00')
-
-#编译
-# 当我们在Python中使用正则表达式时，re模块内部会干两件事情：
-
-# 编译正则表达式，如果正则表达式的字符串本身不合法，会报错；
-# 用编译后的正则表达式去匹配字符串。
-# 如果一个正则表达式要重复使用几千次，出于效率的考虑，我们可以预编译该正则表达式，接下来重复使用时就不需要编译这个步骤了，直接匹配：
-
-# >>> import re
-# # 编译:
-# >>> re_telephone = re.compile(r'^(\d{3})-(\d{3,8})$')
-# # 使用：
-# >>> re_telephone.match('010-12345').groups()
-# ('010', '12345')
-# >>> re_telephone.match('010-8086').groups()
-# ('010', '8086')
-# 编译后生成Regular Expression对象，由于该对象自己包含了正则表达式，所以调用对应的方法时不用给出正则字符串。
-```
+pass
 ## 13.异步IO
-### 13.1 协程
+### 13.1 协程 
 ```python
 # 协程，又称微线程，纤程。英文名Coroutine。
 # 协程的概念很早就提出来了，但直到最近几年才在某些语言（如Lua）中得到广泛应用。
