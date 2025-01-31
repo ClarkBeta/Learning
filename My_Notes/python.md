@@ -183,6 +183,21 @@ a=(1,2,[3,4])
 a[2][0]=5
 print(a) # Output: (1, 2, [5, 4])
 #tuple的每个元素，指向不变    变的不是tuple的元素
+
+#元组可以拆分
+tup = (4, 5, 6)
+a, b, c = tup
+print(b) # Output: 5
+
+values = 1, 2, 3, 4, 5
+a, b, *rest = values
+print(rest) # Output: [3, 4, 5]
+
+#统计某个值得出现频率
+a = (1, 2, 2, 2, 3, 4, 2)
+print(a.count(2)) # Output: 4
+
+
 ```
 ### 2.4 条件判断
 ```python
@@ -199,6 +214,17 @@ else:
 x=0
 if x:
     print('1')#只要x是非零数值、非空字符串、非空list等，就判断为True，否则为False
+
+#三元表达式
+
+# 传统的if-else语句
+if a > b:
+max_value = a
+else:
+max_value = b
+
+# 使用三元表达式
+max_value = a if a > b else b
 ```
 ### 2.5 模式匹配
 ```python
