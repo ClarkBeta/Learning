@@ -2699,3 +2699,1544 @@ MapReduce 的基本设计思想
 
 假设我们有 k 个机器，数据的哈希值的范围是[0, MAX]。我们将整个范围划分成 m 个小区间（m 远大于 k），每个机器负责 m/k 个小区间。当有新机器加入的时候，我们就将某几个小区间的数据，从原来的机器中搬移到新的机器中。这样，既不用全部重新哈希、搬移数据，也保持了各个机器上数据数量的均衡。
 ## 23 | 二叉树基础（上）：什么样的二叉树适合用数组来存储？
+二叉树有哪几种存储方式？什么样的二叉树适合用数组来存储？
+### 1.树（Tree）
+![](algo\23\tree1.png)
+比如下面这幅图，A 节点就是 B 节点的**父节点**，B 节点是 A 节点的**子节点**。B、C、D 这三个节点的父节点是同一个节点，所以它们之间互称为**兄弟节点**。我们把没有父节点的节点叫做**根节点**，也就是图中的节点 E。我们把没有子节点的节点叫做**叶子节点**或者**叶节点**，比如图中的 G、H、I、J、K、L 都是叶子节点。
+
+关于“树”，还有三个比较相似的概念：**高度**（Height）、**深度**（Depth）、**层**（Level）。
+
+![](algo\23\tree2.png)
+
+“高度”这个概念，其实就是从下往上度量，比如我们要度量第 10 层楼的高度、第 13 层楼的高度，起点都是地面。所以，树这种数据结构的高度也是一样，从最底层开始计数，并且计数的起点是 0。
+
+“深度”这个概念在生活中是从上往下度量的，比如水中鱼的深度，是从水平面开始度量的。所以，树这种数据结构的深度也是类似的，从根结点开始度量，并且计数起点也是 0。
+
+“层数”跟深度的计算类似，不过，计数起点是 1，也就是说根节点位于第 1 层。
+### 2.二叉树（Binary Tree）
+二叉树，顾名思义，每个节点最多有两个“叉”，也就是两个子节点，分别是**左子节点**和**右子节点**。
+
+叶子节点全都在最底层，除了叶子节点之外，每个节点都有左右两个子节点，这种二叉树就叫做**满二叉树**。
+
+叶子节点都在最底下两层，最后一层的叶子节点都靠左排列，并且除了最后一层，其他层的节点个数都要达到最大，这种二叉树叫做**完全二叉树**。
+
+**如何表示（或者存储）一棵二叉树？**一种是基于指针或者引用的二叉链式存储法，一种是基于数组的顺序存储法。
+
+我们先来看比较简单、直观的链式存储法。每个节点有三个字段，其中一个存储数据，另外两个是指向左右子节点的指针。我们只要拎住根节点，就可以通过左右子节点的指针，把整棵树都串起来。
+
+我们再来看，基于数组的顺序存储法。我们把根节点存储在下标 i = 1 的位置，那左子节点存储在下标 2 * i = 2 的位置，右子节点存储在 2 * i + 1 = 3 的位置。以此类推，B 节点的左子节点存储在 2 * i = 2 * 2 = 4 的位置，右子节点存储在 2 * i + 1 = 2 * 2 + 1 = 5 的位置。
+
+我来总结一下，如果节点 X 存储在数组中下标为 i 的位置，下标为 2 * i 的位置存储的就是左子节点，下标为 2 * i + 1 的位置存储的就是右子节点。反过来，下标为 i/2 的位置存储就是它的父节点。通过这种方式，我们只要知道根节点存储的位置（一般情况下，为了方便计算子节点，根节点会存储在下标为 1 的位置），这样就可以通过下标计算，把整棵树都串起来。
+
+我刚刚举的例子是一棵完全二叉树，所以仅仅“浪费”了一个下标为 0 的存储位置。如果是非完全二叉树，其实会浪费比较多的数组存储空间。
+
+### 3.二叉树的遍历
+如何将所有节点都遍历打印出来呢？经典的方法有三种，**前序遍历、中序遍历和后序遍历**。其中，前、中、后序，表示的是节点与它的左右子树节点遍历打印的先后顺序。
+
+* 前序遍历是指，对于树中的任意节点来说，先打印这个节点，然后再打印它的左子树，最后打印它的右子树。
+* 中序遍历是指，对于树中的任意节点来说，先打印它的左子树，然后再打印它本身，最后打印它的右子树。
+* 后序遍历是指，对于树中的任意节点来说，先打印它的左子树，然后再打印它的右子树，最后打印这个节点本身。
+
+**实际上，二叉树的前、中、后序遍历就是一个递归的过程。**
+
+```
+前序遍历的递推公式：
+preOrder(r) = print r->preOrder(r->left)->preOrder(r->right)
+
+中序遍历的递推公式：
+inOrder(r) = inOrder(r->left)->print r->inOrder(r->right)
+
+后序遍历的递推公式：
+postOrder(r) = postOrder(r->left)->postOrder(r->right)->print r
+```
+```
+void preOrder(Node* root) {
+  if (root == null) return;
+  print root // 此处为伪代码，表示打印root节点
+  preOrder(root->left);
+  preOrder(root->right);
+}
+
+void inOrder(Node* root) {
+  if (root == null) return;
+  inOrder(root->left);
+  print root // 此处为伪代码，表示打印root节点
+  inOrder(root->right);
+}
+
+void postOrder(Node* root) {
+  if (root == null) return;
+  postOrder(root->left);
+  postOrder(root->right);
+  print root // 此处为伪代码，表示打印root节点
+}
+```
+每个节点最多会被访问两次，所以遍历操作的时间复杂度，跟节点的个数 n 成正比，也就是说二叉树遍历的时间复杂度是 O(n)。
+### 4.代码实现
+```python
+"""
+    Pre-order, in-order and post-order traversal of binary trees.
+
+    Author: Wenru Dong
+"""
+from typing import TypeVar, Generic, Generator, Optional
+
+T = TypeVar("T")
+
+class TreeNode(Generic[T]):
+    def __init__(self, value: T):
+        self.val = value
+        self.left = None
+        self.right = None
+    
+
+# Pre-order traversal
+def pre_order(root: Optional[TreeNode[T]]) -> Generator[T, None, None]:
+    if root:
+        yield root.val
+        yield from pre_order(root.left)
+        yield from pre_order(root.right)
+
+# In-order traversal
+def in_order(root: Optional[TreeNode[T]]) -> Generator[T, None, None]:
+    if root:
+        yield from in_order(root.left)
+        yield root.val
+        yield from in_order(root.right)
+
+# Post-order traversal
+def post_order(root: Optional[TreeNode[T]]) -> Generator[T, None, None]:
+    if root:
+        yield from post_order(root.left)
+        yield from post_order(root.right)
+        yield root.val
+
+
+if __name__ == "__main__":
+
+    singer = TreeNode("Taylor Swift")
+
+    genre_country = TreeNode("Country")
+    genre_pop = TreeNode("Pop")
+
+    album_fearless = TreeNode("Fearless")
+    album_red = TreeNode("Red")
+    album_1989 = TreeNode("1989")
+    album_reputation = TreeNode("Reputation")
+
+    song_ls = TreeNode("Love Story")
+    song_wh = TreeNode("White Horse")
+    song_wanegbt = TreeNode("We Are Never Ever Getting Back Together")
+    song_ikywt = TreeNode("I Knew You Were Trouble")
+    song_sio = TreeNode("Shake It Off")
+    song_bb = TreeNode("Bad Blood")
+    song_lwymmd = TreeNode("Look What You Made Me Do")
+    song_g = TreeNode("Gorgeous")
+
+    singer.left, singer.right = genre_country, genre_pop
+    genre_country.left, genre_country.right = album_fearless, album_red
+    genre_pop.left, genre_pop.right = album_1989, album_reputation
+    album_fearless.left, album_fearless.right = song_ls, song_wh
+    album_red.left, album_red.right = song_wanegbt, song_ikywt
+    album_1989.left, album_1989.right = song_sio, song_bb
+    album_reputation.left, album_reputation.right = song_lwymmd, song_g
+
+    print(list(pre_order(singer)))
+    print(list(in_order(singer)))
+    print(list(post_order(singer)))
+```
+## 24 | 二叉树基础（下）：有了如此高效的散列表，为什么还需要二叉树？
+既然有了这么高效的散列表，使用二叉树的地方是不是都可以替换成散列表呢？有没有哪些地方是散列表做不了，必须要用二叉树来做的呢？
+### 1.二叉查找树（Binary Search Tree）
+**二叉查找树要求，在树中的任意一个节点，其左子树中的每个节点的值，都要小于这个节点的值，而右子树节点的值都大于这个节点的值。**
+#### 1. 二叉查找树的查找操作
+首先，我们看如何在二叉查找树中查找一个节点。我们先取根节点，如果它等于我们要查找的数据，那就返回。如果要查找的数据比根节点的值小，那就在左子树中递归查找；如果要查找的数据比根节点的值大，那就在右子树中递归查找。
+```java
+public class BinarySearchTree {
+  private Node tree;
+
+  public Node find(int data) {
+    Node p = tree;
+    while (p != null) {
+      if (data < p.data) p = p.left;
+      else if (data > p.data) p = p.right;
+      else return p;
+    }
+    return null;
+  }
+
+  public static class Node {
+    private int data;
+    private Node left;
+    private Node right;
+
+    public Node(int data) {
+      this.data = data;
+    }
+  }
+}
+```
+#### 2. 二叉查找树的插入操作
+二叉查找树的插入过程有点类似查找操作。新插入的数据一般都是在叶子节点上，所以我们只需要从根节点开始，依次比较要插入的数据和节点的大小关系。
+
+如果要插入的数据比节点的数据大，并且节点的右子树为空，就将新数据直接插到右子节点的位置；如果不为空，就再递归遍历右子树，查找插入位置。同理，如果要插入的数据比节点数值小，并且节点的左子树为空，就将新数据插入到左子节点的位置；如果不为空，就再递归遍历左子树，查找插入位置。
+```java
+public void insert(int data) {
+  if (tree == null) {
+    tree = new Node(data);
+    return;
+  }
+
+  Node p = tree;
+  while (p != null) {
+    if (data > p.data) {
+      if (p.right == null) {
+        p.right = new Node(data);
+        return;
+      }
+      p = p.right;
+    } else { // data < p.data
+      if (p.left == null) {
+        p.left = new Node(data);
+        return;
+      }
+      p = p.left;
+    }
+  }
+}
+```
+#### 3. 二叉查找树的删除操作
+第一种情况是，如果要删除的节点没有子节点，我们只需要直接将父节点中，指向要删除节点的指针置为 null。
+
+第二种情况是，如果要删除的节点只有一个子节点（只有左子节点或者右子节点），我们只需要更新父节点中，指向要删除节点的指针，让它指向要删除节点的子节点就可以了。
+
+第三种情况是，如果要删除的节点有两个子节点，这就比较复杂了。我们需要找到这个节点的右子树中的最小节点，把它替换到要删除的节点上。然后再删除掉这个最小节点，因为最小节点肯定没有左子节点（如果有左子结点，那就不是最小节点了），所以，我们可以应用上面两条规则来删除这个最小节点。
+
+```java
+public void delete(int data) {
+  Node p = tree; // p指向要删除的节点，初始化指向根节点
+  Node pp = null; // pp记录的是p的父节点
+  while (p != null && p.data != data) {
+    pp = p;
+    if (data > p.data) p = p.right;
+    else p = p.left;
+  }
+  if (p == null) return; // 没有找到
+
+  // 要删除的节点有两个子节点
+  if (p.left != null && p.right != null) { // 查找右子树中最小节点
+    Node minP = p.right;
+    Node minPP = p; // minPP表示minP的父节点
+    while (minP.left != null) {
+      minPP = minP;
+      minP = minP.left;
+    }
+    p.data = minP.data; // 将minP的数据替换到p中
+    p = minP; // 下面就变成了删除minP了
+    pp = minPP;
+  }
+
+  // 删除节点是叶子节点或者仅有一个子节点
+  Node child; // p的子节点
+  if (p.left != null) child = p.left;
+  else if (p.right != null) child = p.right;
+  else child = null;
+
+  if (pp == null) tree = child; // 删除的是根节点
+  else if (pp.left == p) pp.left = child;
+  else pp.right = child;
+}
+```
+#### 4. 二叉查找树的其他操作
+二叉查找树中还可以支持**快速地查找最大节点和最小节点、前驱节点和后继节点。**
+
+中序遍历二叉查找树，可以输出有序的数据序列，时间复杂度是 O(n)，非常高效。因此，二叉查找树也叫作二叉排序树。
+### 2.支持重复数据的二叉查找树
+很多时候，在实际的软件开发中，我们在二叉查找树中存储的，是一个包含很多字段的对象。我们利用对象的某个字段作为键值（key）来构建二叉查找树。我们把对象中的其他字段叫作卫星数据。
+
+如果存储的两个对象键值相同，这种情况该怎么处理呢？我这里有两种解决方法。
+
+第一种方法比较容易。二叉查找树中每一个节点不仅会存储一个数据，因此我们通过链表和支持动态扩容的数组等数据结构，把值相同的数据都存储在同一个节点上。
+
+第二种方法,每个节点仍然只存储一个数据。在查找插入位置的过程中，如果碰到一个节点的值，与要插入数据的值相同，我们就将这个要插入的数据放到这个节点的右子树，也就是说，把这个新插入的数据当作大于这个节点的值来处理。
+
+当要查找数据的时候，遇到值相同的节点，我们并不停止查找操作，而是继续在右子树中查找，直到遇到叶子节点，才停止。这样就可以把键值等于要查找值的所有节点都找出来。
+
+对于删除操作，我们也需要先查找到每个要删除的节点，然后再按前面讲的删除操作的方法，依次删除。
+### 3.二叉查找树的时间复杂度分析
+不管操作是插入、删除还是查找，**时间复杂度其实都跟树的高度成正比，也就是 O(height)。**
+
+树的高度就等于最大层数减一，为了方便计算，我们转换成层来表示。从图中可以看出，包含 n 个节点的完全二叉树中，第一层包含 1 个节点，第二层包含 2 个节点，第三层包含 4 个节点，依次类推，下面一层节点个数是上一层的 2 倍，第 K 层包含的节点个数就是 2^(K-1)。
+
+不过，对于完全二叉树来说，最后一层的节点个数有点儿不遵守上面的规律了。它包含的节点个数在 1 个到 2^(L-1) 个之间（我们假设最大层数是 L）。如果我们把每一层的节点个数加起来就是总的节点个数 n。也就是说，如果节点的个数是 n，那么 n 满足这样一个关系：
+```
+n >= 1+2+4+8+...+2^(L-2)+1
+n <= 1+2+4+8+...+2^(L-2)+2^(L-1)
+```
+借助等比数列的求和公式，我们可以计算出，L 的范围是[log2(n+1), log2n +1]。完全二叉树的层数小于等于 log2n +1，也就是说，完全二叉树的高度小于等于 log2n。
+
+显然，极度不平衡的二叉查找树，它的查找性能肯定不能满足我们的需求。我们需要构建一种不管怎么删除、插入数据，在任何时候，都能保持任意节点左右子树都比较平衡的二叉查找树，这就是我们下一节课要详细讲的，一种特殊的二叉查找树，平衡二叉查找树。平衡二叉查找树的高度接近 logn，所以插入、删除、查找操作的时间复杂度也比较稳定，是 O(logn)。
+### 3.解答开篇
+第一，散列表中的数据是无序存储的，如果要输出有序的数据，需要先进行排序。而对于二叉查找树来说，我们只需要中序遍历，就可以在 O(n) 的时间复杂度内，输出有序的数据序列。
+
+第二，散列表扩容耗时很多，而且当遇到散列冲突时，性能不稳定，尽管二叉查找树的性能不稳定，但是在工程中，我们最常用的平衡二叉查找树的性能非常稳定，时间复杂度稳定在 O(logn)。
+
+第三，笼统地来说，尽管散列表的查找等操作的时间复杂度是常量级的，但因为哈希冲突的存在，这个常量不一定比 logn 小，所以实际的查找速度可能不一定比 O(logn) 快。加上哈希函数的耗时，也不一定就比平衡二叉查找树的效率高。
+
+第四，散列表的构造比二叉查找树要复杂，需要考虑的东西很多。比如散列函数的设计、冲突解决办法、扩容、缩容等。平衡二叉查找树只需要考虑平衡性这一个问题，而且这个问题的解决方案比较成熟、固定。
+
+最后，为了避免过多的散列冲突，散列表装载因子不能太大，特别是基于开放寻址法解决冲突的散列表，不然会浪费一定的存储空间。
+### 4.代码实现
+```python
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+
+from queue import Queue
+import math
+
+
+class TreeNode:
+    def __init__(self, val=None):
+        self.val = val
+        self.left = None
+        self.right = None
+        self.parent = None
+
+
+class BinarySearchTree:
+    def __init__(self, val_list=[]):
+        self.root = None
+        for n in val_list:
+            self.insert(n)
+
+    def insert(self, data):
+        """
+        插入
+        :param data:
+        :return:
+        """
+        assert(isinstance(data, int))
+
+        if self.root is None:
+            self.root = TreeNode(data)
+        else:
+            n = self.root
+            while n:
+                p = n
+                if data < n.val:
+                    n = n.left
+                else:
+                    n = n.right
+
+            new_node = TreeNode(data)
+            new_node.parent = p
+            
+            if data < p.val:
+                p.left = new_node
+            else:
+                p.right = new_node
+
+        return True
+
+    def search(self, data):
+        """
+        搜索
+        返回bst中所有值为data的节点列表
+        :param data:
+        :return:
+        """
+        assert(isinstance(data, int))
+
+        # 所有搜索到的节点
+        ret = []
+
+        n = self.root
+        while n:
+            if data < n.val:
+                n = n.left
+            else:
+                if data == n.val:
+                    ret.append(n)
+                n = n.right
+
+        return ret
+
+    def delete(self, data):
+        """
+        删除
+        :param data:
+        :return:
+        """
+        assert (isinstance(data, int))
+
+        # 通过搜索得到需要删除的节点
+        del_list = self.search(data)
+
+        for n in del_list:
+            # 父节点为空，又不是根节点，已经不在树上，不用再删除
+            if n.parent is None and n != self.root:
+                continue
+            else:
+                self._del(n)
+
+    def _del(self, node):
+        """
+        删除
+        所删除的节点N存在以下情况：
+        1. 没有子节点：直接删除N的父节点指针
+        2. 有一个子节点：将N父节点指针指向N的子节点
+        3. 有两个子节点：找到右子树的最小节点M，将值赋给N，然后删除M
+        :param data:
+        :return:
+        """
+        # 1
+        if node.left is None and node.right is None:
+            # 情况1和2，根节点和普通节点的处理方式不同
+            if node == self.root:
+                self.root = None
+            else:
+                if node.val < node.parent.val:
+                    node.parent.left = None
+                else:
+                    node.parent.right = None
+
+                node.parent = None
+        # 2
+        elif node.left is None and node.right is not None:
+            if node == self.root:
+                self.root = node.right
+                self.root.parent = None
+                node.right = None
+            else:
+                if node.val < node.parent.val:
+                    node.parent.left = node.right
+                else:
+                    node.parent.right = node.right
+
+                node.right.parent = node.parent
+                node.parent = None
+                node.right = None
+        elif node.left is not None and node.right is None:
+            if node == self.root:
+                self.root = node.left
+                self.root.parent = None
+                node.left = None
+            else:
+                if node.val < node.parent.val:
+                    node.parent.left = node.left
+                else:
+                    node.parent.right = node.left
+
+                node.left.parent = node.parent
+                node.parent = None
+                node.left = None
+        # 3
+        else:
+            min_node = node.right
+            # 找到右子树的最小值节点
+            if min_node.left:
+                min_node = min_node.left
+
+            if node.val != min_node.val:
+                node.val = min_node.val
+                self._del(min_node)
+            # 右子树的最小值节点与被删除节点的值相等，再次删除原节点
+            else:
+                self._del(min_node)
+                self._del(node)
+
+    def get_min(self):
+        """
+        返回最小值节点
+        :return:
+        """
+        if self.root is None:
+            return None
+
+        n = self.root
+        while n.left:
+            n = n.left
+        return n.val
+
+    def get_max(self):
+        """
+        返回最大值节点
+        :return:
+        """
+        if self.root is None:
+            return None
+
+        n = self.root
+        while n.right:
+            n = n.right
+        return n.val
+
+    def in_order(self):
+        """
+        中序遍历
+        :return:
+        """
+        if self.root is None:
+            return []
+
+        return self._in_order(self.root)
+
+    def _in_order(self, node):
+        if node is None:
+            return []
+
+        ret = []
+        n = node
+        ret.extend(self._in_order(n.left))
+        ret.append(n.val)
+        ret.extend(self._in_order(n.right))
+        
+        return ret
+
+    def __repr__(self):
+        # return str(self.in_order())
+        print(str(self.in_order()))
+        return self._draw_tree()
+
+    def _bfs(self):
+        """
+        bfs
+        通过父子关系记录节点编号
+        :return:
+        """
+        if self.root is None:
+            return []
+
+        ret = []
+        q = Queue()
+        # 队列[节点，编号]
+        q.put((self.root, 1))
+
+        while not q.empty():
+            n = q.get()
+
+            if n[0] is not None:
+                ret.append((n[0].val, n[1]))
+                q.put((n[0].left, n[1]*2))
+                q.put((n[0].right, n[1]*2+1))
+
+        return ret
+
+    def _draw_tree(self):
+        """
+        可视化
+        :return:
+        """
+        nodes = self._bfs()
+        
+        if not nodes:
+            print('This tree has no nodes.')
+            return
+
+        layer_num = int(math.log(nodes[-1][1], 2)) + 1
+        
+        prt_nums = []
+        
+        for i in range(layer_num):
+            prt_nums.append([None]*2**i)
+
+        for v, p in nodes:
+            row = int(math.log(p ,2))
+            col = p % 2**row
+            prt_nums[row][col] = v
+
+        prt_str = ''
+        for l in prt_nums:
+            prt_str += str(l)[1:-1] + '\n'
+
+        return prt_str
+
+
+if __name__ == '__main__':
+    nums = [4, 2, 5, 6, 1, 7, 3]
+    bst = BinarySearchTree(nums)
+    print(bst)
+
+    # 插入
+    bst.insert(1)
+    bst.insert(4)
+    print(bst)
+
+    # 搜索
+    for n in bst.search(2):
+        print(n.parent.val, n.val)
+
+    # 删除
+    bst.insert(6)
+    bst.insert(7)
+    print(bst)
+    bst.delete(7)
+    print(bst)
+    bst.delete(6)
+    print(bst)
+    bst.delete(4)
+    print(bst)
+
+    # min max
+    print(bst.get_max())
+    print(bst.get_min())
+```
+## 25 | 红黑树（上）：为什么工程中都用红黑树这种二叉树？
+为什么工程中都喜欢用红黑树，而不是其他平衡二叉查找树呢？
+### 1.什么是“平衡二叉查找树”？
+平衡二叉树的严格定义是这样的：二叉树中任意一个节点的左右子树的高度相差不能大于 1。从这个定义来看，上一节我们讲的完全二叉树、满二叉树其实都是平衡二叉树，但是非完全二叉树也有可能是平衡二叉树。
+
+平衡二叉查找树不仅满足上面平衡二叉树的定义，还满足二叉查找树的特点。
+
+但是很多平衡二叉查找树其实并没有严格符合上面的定义（树中任意一个节点的左右子树的高度相差不能大于 1），比如我们下面要讲的红黑树，它从根节点到各个叶子节点的最长路径，有可能会比最短路径大一倍。
+
+**平衡二叉查找树中“平衡”的意思，其实就是让整棵树左右看起来比较“对称”、比较“平衡”，不要出现左子树很高、右子树很矮的情况。这样就能让整棵树的高度相对来说低一些，相应的插入、删除、查找等操作的效率高一些。**
+
+所以，如果我们现在设计一个新的平衡二叉查找树，只要树的高度不比 log2n 大很多（比如树的高度仍然是对数量级的），尽管它不符合我们前面讲的严格的平衡二叉查找树的定义，但我们仍然可以说，这是一个合格的平衡二叉查找树。
+### 2.如何定义一棵“红黑树”？
+红黑树的英文是“Red-Black Tree”，简称 R-B Tree。它是一种不严格的平衡二叉查找树，我前面说了，它的定义是不严格符合平衡二叉查找树的定义的。
+
+红黑树中的节点，一类被标记为黑色，一类被标记为红色。除此之外，一棵红黑树还需要满足这样几个要求：
+
+* 根节点是黑色的；
+* 每个叶子节点都是黑色的空节点（NIL），也就是说，叶子节点不存储数据；
+* 任何相邻的节点都不能同时为红色，也就是说，红色节点是被黑色节点隔开的；
+* 每个节点，从该节点到达其可达叶子节点的所有路径，都包含相同数目的黑色节点；
+
+### 3.为什么说红黑树是“近似平衡”的？
+**“平衡”的意思可以等价为性能不退化。“近似平衡”就等价为性能不会退化得太严重。**
+
+**首先，我们来看，如果我们将红色节点从红黑树中去掉，那单纯包含黑色节点的红黑树的高度是多少呢？**
+
+红色节点删除之后，有些节点就没有父节点了，它们会直接拿这些节点的祖父节点（父节点的父节点）作为父节点。所以，之前的二叉树就变成了四叉树。
+
+前面红黑树的定义里有这么一条：从任意节点到可达的叶子节点的每个路径包含相同数目的黑色节点。我们从四叉树中取出某些节点，放到叶节点位置，四叉树就变成了完全二叉树。所以，仅包含黑色节点的四叉树的高度，比包含相同节点个数的完全二叉树的高度还要小。
+
+上一节我们说，完全二叉树的高度近似 log2n，这里的四叉“黑树”的高度要低于完全二叉树，所以去掉红色节点的“黑树”的高度也不会超过 log2n。
+
+**我们现在知道只包含黑色节点的“黑树”的高度，那我们现在把红色节点加回去，高度会变成多少呢？**
+
+从上面我画的红黑树的例子和定义看，在红黑树中，红色节点不能相邻，也就是说，有一个红色节点就要至少有一个黑色节点，将它跟其他红色节点隔开。红黑树中包含最多黑色节点的路径不会超过 log2n，所以加入红色节点之后，最长路径不会超过 2log2n，也就是说，红黑树的高度近似 2log2n。
+
+所以，红黑树的高度只比高度平衡的 AVL 树的高度（log2n）仅仅大了一倍，在性能上，下降得并不多。这样推导出来的结果不够精确，实际上红黑树的性能更好。
+### 3.解答开篇
+红黑树只是做到了近似平衡，并不是严格的平衡，所以在维护平衡的成本上，要比 AVL 树要低。
+## 26 | 红黑树（下）：掌握这些技巧，你也可以实现一个红黑树（未完成）
+### 1.实现红黑树的基本思想
+实际上，红黑树的平衡过程跟魔方复原非常神似，大致过程就是：**遇到什么样的节点排布，我们就对应怎么去调整。**只要按照这些固定的调整规则来操作，就能将一个非平衡的红黑树调整成平衡的。
+
+一棵合格的红黑树需要满足这样几个要求：
+
+* 根节点是黑色的；
+* 每个叶子节点都是黑色的空节点（NIL），也就是说，叶子节点不存储数据；
+* 任何相邻的节点都不能同时为红色，也就是说，红色节点是被黑色节点隔开的；
+* 每个节点，从该节点到达其可达叶子节点的所有路径，都包含相同数目的黑色节点。
+
+在正式开始之前，我先介绍两个非常重要的操作，**左旋（rotate left）、右旋（rotate right）。**左旋全称其实是叫围绕某个节点的左旋，那右旋的全称估计你已经猜到了，就叫围绕某个节点的右旋。
+
+### 4.代码实现
+```python
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+
+from queue import Queue
+import pygraphviz as pgv
+import random
+
+OUTPUT_PATH = 'E:/'
+
+
+class TreeNode:
+    def __init__(self, val=None, color=None):
+        self.val = val
+        assert color in ['r', 'b']
+        self.color = 'red' if color == 'r' else 'black'
+
+        self.left = None
+        self.right = None
+        self.parent = None
+
+    def is_black(self):
+        return self.color == 'black'
+
+    def set_black(self):
+        self.color = 'black'
+        return
+
+    def set_red(self):
+        self.color = 'red'
+
+
+class RedBlackTree:
+    """
+    红黑树实现
+    参考资料：
+    1. 《算法导论》
+    第13章 红黑树
+    13.3 插入 p178
+    13.4 删除 p183
+
+    2. 红黑树（二）：删除
+    https://zhuanlan.zhihu.com/p/25402654
+    """
+    def __init__(self, val_list=None):
+        self.root = None
+        self.black_leaf = TreeNode(color='b')  # 共用的黑色叶子节点
+
+        # 可用数组初始化
+        if type(val_list) is list:
+            for n in val_list:
+                assert type(n) is int
+                self.insert(n)
+
+    def search(self, val):
+        """
+        搜索
+        :param val:
+        :return:
+        """
+        if self.root is None:
+            return None
+
+        n = self.root
+        while n != self.black_leaf:
+            if val < n.val:
+                n = n.left
+            elif val > n.val:
+                n = n.right
+            else:
+                return n
+        return None
+
+    def insert(self, val):
+        """
+        插入
+        :param val:
+        :return:
+        """
+        assert type(val) is int
+
+        new_node = TreeNode(val, 'r')  # 新插入的节点为红色
+
+        # 根节点
+        if self.root is None:
+            self.root = new_node
+        else:
+            n = self.root
+            while n != self.black_leaf:  # 黑色叶子节点
+                p = n
+                if val < n.val:
+                    n = n.left
+                elif val > n.val:
+                    n = n.right
+                else:
+                    raise KeyError('val:{} already exists')  # 该值已存在，插入失败
+
+            if val < p.val:
+                p.left = new_node
+            else:
+                p.right = new_node
+            new_node.parent = p
+
+        new_node.left = new_node.right = self.black_leaf
+        # 插入后调整
+        self._insert_fixup(new_node)
+
+    def _insert_fixup(self, node):
+        """
+        插入调整
+        参考资料：《算法导论》 13.3 p178-179
+        :param node:
+        :return:
+        """
+        n = node
+        while n is not self.root and not n.parent.is_black():
+            # 父p 叔u 祖父g
+            p = self.parent(n)
+            u = self.bro(p)
+            g = self.parent(p)
+
+            if not u.is_black():        # case 1
+                p.set_black()           # case 1
+                u.set_black()           # case 1
+                g.set_red()             # case 1
+                n = g                   # case 1
+                continue
+
+            if p == g.left:     # p为左结点
+                if n == p.right:        # case 2
+                    self.rotate_l(p)    # case 2
+                    n, p = p, n         # case 2
+                p.set_black()           # case 3
+                g.set_red()             # case 3
+                self.rotate_r(g)        # case 3
+            else:               # p为右节点
+                if n == p.left:         # case 2
+                    self.rotate_r(p)    # case 2
+                    n, p = p, n         # case 2
+                p.set_black()           # case 3
+                g.set_red()             # case 3
+                self.rotate_l(g)        # case 3
+
+        # 根节点强制置黑，有两种情况根节点是红色：
+        # 1. 新插入时是红色
+        # 2. 经过case 1调整过后变红色
+        self.root.color = 'black'
+
+    def delete(self, val):
+        """
+        删除
+        :param val:
+        :return:
+        """
+        assert type(val) is int
+
+        n = self.search(val)
+        if n is None:
+            print('can not find any nodes with value: {}'.format(val))
+            return
+
+        self._delete_node(n)
+
+    def _delete_node(self, node):
+        """
+        删除节点内部实现
+        参考资料：《算法导论》 13.4 p183-184
+        实现方式有微调，当n有2个子节点时，将s拷贝至n，转为删除s(s最多有一个子节点)
+        :param node:
+        :return:
+        """
+        n = node
+
+        # n的子节点个数等于2
+        if self.children_count(n) == 2:
+            # 寻找n的后继s
+            s = n.right
+            while s.left != self.black_leaf:
+                s = s.left
+            n.val = s.val
+            # 将删除n转化为删除s
+            n = s
+
+        # n的子节点个数小于2
+        if n.left == self.black_leaf:
+            c = n.right
+        else:
+            c = n.left
+        self._transplant(n, c)
+
+        # 删除的节点是黑色，需要调整
+        if n.is_black():
+            self._delete_fixup(c)
+        return
+
+    def _delete_fixup(self, node):
+        """
+        删除调整
+        参考资料：《算法导论》 13.4 p185-187
+        :param node:
+        :return:
+        """
+        n = node
+        while n != self.root and n.is_black():
+            p = self.parent(n)
+            b = self.bro(n)
+
+            # 左右节点对称
+            if p.left == n:
+                if not b.is_black():
+                    b.set_black()                   # case 1
+                    p.set_red()                     # case 1
+                    self.rotate_l(p)                # case 1
+                    # new bro after rotate
+                    b = self.bro(n)                 # case 1
+
+                if b.left.is_black() and b.right.is_black():
+                    b.set_red()                     # case 2
+                    n = p                           # case 2
+                else:
+                    if b.right.is_black():
+                        b.left.set_black()          # case 3
+                        b.set_red()                 # case 3
+                        self.rotate_r(b)            # case 3
+                        # new bro after rotate
+                        b = self.bro(n)             # case 3
+
+                    # 注意，因为p可能是红或黑，所以不能直接赋值颜色，只能copy
+                    b.color = p.color               # case 4
+                    p.set_black()                   # case 4
+                    b.right.set_black()             # case 4
+                    self.rotate_l(p)                # case 4
+                    # trick, 调整结束跳出while
+                    n = self.root                   # case 4
+            else:
+                if not b.is_black():
+                    b.set_black()                   # case 1
+                    p.set_red()                     # case 1
+                    self.rotate_r(p)                # case 1
+                    # new bro after rotate
+                    b = self.bro(n)                 # case 1
+
+                if b.left.is_black() and b.right.is_black():
+                    b.set_red()                     # case 2
+                    n = p                           # case 2
+                else:
+                    if b.left.is_black():
+                        b.right.set_black()         # case 3
+                        b.set_red()                 # case 3
+                        self.rotate_l(b)            # case 3
+                        # new bro after rotate
+                        b = self.bro(n)             # case 3
+
+                    # 注意，因为p可能是红或黑，所以不能直接赋值颜色，只能copy
+                    b.color = p.color               # case 4
+                    p.set_black()                   # case 4
+                    b.left.set_black()              # case 4
+                    self.rotate_r(p)                # case 4
+                    # trick, 调整结束跳出while
+                    n = self.root                   # case 4
+
+        # 将n设为黑色，从上面while循环跳出，情况有两种
+        # 1. n是根节点，直接无视附加的黑色
+        # 2. n是红色的节点，则染黑
+        n.set_black()
+
+    def _transplant(self, n1, n2):
+        """
+        节点移植， n2 -> n1
+        :param n1: 原节点
+        :param n2: 移植节点
+        :return:
+        """
+        if n1 == self.root:
+            if n2 != self.black_leaf:
+                self.root = n2
+                n2.parent = None
+            else:
+                self.root = None    # 只有删除根节点时会进来
+        else:
+            p = self.parent(n1)
+            if p.left == n1:
+                p.left = n2
+            else:
+                p.right = n2
+
+            n2.parent = p
+
+    def rotate_l(self, node):
+        """
+        左旋
+        :param node:
+        :return:
+        """
+        if node is None:
+            return
+
+        if node.right is self.black_leaf:
+            return
+            # raise Exception('try rotate left , but the node "{}" has no right child'.format(node.val))
+
+        p = self.parent(node)
+        x = node
+        y = node.right
+
+        # node为根节点时，p为None，旋转后要更新根节点指向
+        if p is not None:
+            if x == p.left:
+                p.left = y
+            else:
+                p.right = y
+        else:
+            self.root = y
+
+        x.parent, y.parent = y, p
+
+        if y.left != self.black_leaf:
+            y.left.parent = x
+
+        x.right, y.left = y.left, x
+
+    def rotate_r(self, node):
+        """
+        右旋
+        :param node:
+        :return:
+        """
+        if node is None:
+            return
+
+        if node.left is self.black_leaf:
+            return
+            # raise Exception('try rotate right , but the node "{}" has no left child'.format(node.val))
+
+        p = self.parent(node)
+        x = node
+        y = node.left
+
+        # 同左旋
+        if p is not None:
+            if x == p.left:
+                p.left = y
+            else:
+                p.right = y
+        else:
+            self.root = y
+
+        x.parent, y.parent = y, p
+
+        if y.right is not None:
+            y.right.parent = x
+
+        x.left, y.right = y.right, x
+
+    @staticmethod
+    def bro(node):
+        """
+        获取兄弟节点
+        :param node:
+        :return:
+        """
+        if node is None or node.parent is None:
+            return None
+        else:
+            p = node.parent
+            if node == p.left:
+                return p.right
+            else:
+                return p.left
+
+    @staticmethod
+    def parent(node):
+        """
+        获取父节点
+        :param node:
+        :return:
+        """
+        if node is None:
+            return None
+        else:
+            return node.parent
+
+    def children_count(self, node):
+        """
+        获取子节点个数
+        :param node:
+        :return:
+        """
+        return 2 - [node.left, node.right].count(self.black_leaf)
+
+    def draw_img(self, img_name='Red_Black_Tree.png'):
+        """
+        画图
+        用pygraphviz画出节点和箭头
+        箭头的红色和黑色分别代表左和右
+        :param img_name:
+        :return:
+        """
+        if self.root is None:
+            return
+
+        tree = pgv.AGraph(directed=True, strict=True)
+
+        q = Queue()
+        q.put(self.root)
+
+        while not q.empty():
+            n = q.get()
+            if n != self.black_leaf:  # 黑色叶子的连线由各个节点自己画
+                tree.add_node(n.val, color=n.color)
+                #  画父节点箭头
+                # if n.parent is not None:
+                #     tree.add_edge(n.val, n.parent.val)
+
+                for c in [n.left, n.right]:
+                    q.put(c)
+                    color = 'red' if c == n.left else 'black'
+                    if c != self.black_leaf:
+                        tree.add_edge(n.val, c.val, color=color)
+                    else:
+                        tree.add_edge(n.val, 'None', color=color)
+
+        tree.graph_attr['epsilon'] = '0.01'
+        tree.layout('dot')
+        tree.draw(OUTPUT_PATH + img_name)
+        return True
+
+
+if __name__ == '__main__':
+    rbt = RedBlackTree()
+
+    # insert
+    nums = list(range(1, 25))
+    # random.shuffle(nums)
+    for num in nums:
+        rbt.insert(num)
+
+    # search
+    search_num = 23
+    n = rbt.search(search_num)
+    if n is not None:
+        print(n)
+    else:
+        print('node {} not found'.format(search_num))
+
+    # delete
+    rbt.delete(4)
+
+    # draw image
+    rbt.draw_img('rbt.png')
+```
+## 27 | 递归树：如何借助树来求解递归算法的时间复杂度？（未完成）
+### 1.递归树与时间复杂度分析
+我们前面讲过，递归的思想就是，将大问题分解为小问题来求解，然后再将小问题分解为小小问题。这样一层一层地分解，直到问题的数据规模被分解得足够小，不用继续递归分解为止。
+
+如果我们把这个一层一层的分解过程画成图，它其实就是一棵树。我们给这棵树起一个名字，叫作递归树。我这里画了一棵斐波那契数列的递归树，你可以看看。节点里的数字表示数据的规模，一个节点的求解可以分解为左右子节点两个问题的求解。
+
+## 28 | 堆和堆排序：为什么说堆排序没有快速排序快？
+在实际的软件开发中，快速排序的性能要比堆排序好，这是为什么呢？
+### 1.如何理解“堆”？
+只要满足这两点，它就是一个堆。
+
+* 堆是一个完全二叉树；
+* 堆中每一个节点的值都必须大于等于（或小于等于）其子树中每个节点的值。
+
+第一点，堆必须是一个完全二叉树。完全二叉树要求，除了最后一层，其他层的节点个数都是满的，最后一层的节点都靠左排列。
+
+第二点，堆中的每个节点的值必须大于等于（或者小于等于）其子树中每个节点的值。实际上，我们还可以换一种说法，堆中每个节点的值都大于等于（或者小于等于）其左右子节点的值。这两种表述是等价的。
+
+对于每个节点的值都大于等于子树中每个节点值的堆，我们叫做“大顶堆”。对于每个节点的值都小于等于子树中每个节点值的堆，我们叫做“小顶堆”。
+### 2.如何实现一个堆？
+我们先要知道，**堆都支持哪些操作以及如何存储一个堆。**
+
+完全二叉树比较适合用数组来存储。用数组来存储完全二叉树是非常节省存储空间的。因为我们不需要存储左右子节点的指针，单纯地通过数组的下标，就可以找到一个节点的左右子节点和父节点。
+
+堆上的操作有哪些呢？我罗列了几个非常核心的操作，分别是往堆中插入一个元素和删除堆顶元素。
+#### 1. 往堆中插入一个元素
+如果我们把新插入的元素放到堆的最后，你可以看我画的这个图，是不是不符合堆的特性了？于是，我们就需要进行调整，让其重新满足堆的特性，这个过程我们起了一个名字，就叫做**堆化**（heapify）。
+
+**从下往上**的堆化方法
+
+堆化非常简单，就是顺着节点所在的路径，向上或者向下，对比，然后交换。
+
+我这里画了一张堆化的过程分解图。我们可以让新插入的节点与父节点对比大小。如果不满足子节点小于等于父节点的大小关系，我们就互换两个节点。一直重复这个过程，直到父子节点之间满足刚说的那种大小关系。
+
+```java
+public class Heap {
+  private int[] a; // 数组，从下标1开始存储数据
+  private int n;  // 堆可以存储的最大数据个数
+  private int count; // 堆中已经存储的数据个数
+  public Heap(int capacity) {
+    a = new int[capacity + 1];
+    n = capacity;
+    count = 0;
+  }
+  public void insert(int data) {
+    if (count >= n) return; // 堆满了
+    ++count;
+    a[count] = data;
+    int i = count;
+    while (i/2 > 0 && a[i] > a[i/2]) { // 自下往上堆化
+      swap(a, i, i/2); // swap()函数作用：交换下标为i和i/2的两个元素
+      i = i/2;
+    }
+  }
+ }
+```
+#### 2. 删除堆顶元素
+堆顶元素存储的就是堆中数据的最大值或者最小值。
+
+假设我们构造的是大顶堆，堆顶元素就是最大的元素。当我们删除堆顶元素之后，就需要把第二大的元素放到堆顶，那第二大元素肯定会出现在左右子节点中。然后我们再迭代地删除第二大节点，以此类推，直到叶子节点被删除。 不过这种方法有点问题，就是最后堆化出来的堆并不满足完全二叉树的特性。
+
+我们把最后一个节点放到堆顶，然后利用同样的父子节点对比方法。对于不满足父子节点大小关系的，互换两个节点，并且重复进行这个过程，直到父子节点之间满足大小关系为止。这就是**从上往下的堆化方法**。
+
+```java
+public void removeMax() {
+  if (count == 0) return -1; // 堆中没有数据
+  a[1] = a[count];
+  --count;
+  heapify(a, count, 1);
+}
+private void heapify(int[] a, int n, int i) { // 自上往下堆化
+  while (true) {
+    int maxPos = i;
+    if (i*2 <= n && a[i] < a[i*2]) maxPos = i*2;
+    if (i*2+1 <= n && a[maxPos] < a[i*2+1]) maxPos = i*2+1;
+    if (maxPos == i) break;
+    swap(a, i, maxPos);
+    i = maxPos;
+  }
+}
+```
+我们知道，一个包含 n 个节点的完全二叉树，树的高度不会超过 log2 n。堆化的过程是顺着节点所在路径比较交换的，所以堆化的时间复杂度跟树的高度成正比，也就是 O(logn)。插入数据和删除堆顶元素的主要逻辑就是堆化，所以，往堆中插入一个元素和删除堆顶元素的时间复杂度都是 O(logn)。
+### 3.如何基于堆实现排序？
+#### 1. 建堆
+我们首先将数组原地建成一个堆。建堆的过程，有两种思路。
+
+第一种是借助我们前面讲的，在堆中插入一个元素的思路。尽管数组中包含 n 个数据，但是我们可以假设，起初堆中只包含一个数据，就是下标为 1 的数据。然后，我们调用前面讲的插入操作，将下标从 2 到 n 的数据依次插入到堆中。这样我们就将包含 n 个数据的数组，组织成了堆。
+
+第二种实现思路，是从后往前处理数组，并且每个数据都是从上往下堆化。因为叶子节点往下堆化只能自己跟自己比较，所以我们直接从最后一个非叶子节点开始，依次堆化就行了。
+```java
+private static void buildHeap(int[] a, int n) {
+  for (int i = n/2; i >= 1; --i) {
+    heapify(a, n, i);
+  }
+}
+private static void heapify(int[] a, int n, int i) {
+  while (true) {
+    int maxPos = i;
+    if (i*2 <= n && a[i] < a[i*2]) maxPos = i*2;
+    if (i*2+1 <= n && a[maxPos] < a[i*2+1]) maxPos = i*2+1;
+    if (maxPos == i) break;
+    swap(a, i, maxPos);
+    i = maxPos;
+  }
+}
+```
+在这段代码中，我们对下标从  2/n开始到 1 的数据进行堆化，下标是(2/n)+1 到 n 的节点是叶子节点，我们不需要堆化。实际上，对于完全二叉树来说，下标从(2/n)+1 到 n 的节点都是叶子节点。
+
+堆排序的建堆过程的时间复杂度是 O(n)。
+
+因为叶子节点不需要堆化，所以需要堆化的节点从倒数第二层开始。每个节点堆化的过程中，需要比较和交换的节点个数，跟这个节点的高度 k 成正比。
+
+我们只需要将每个节点的高度求和，得出的就是建堆的时间复杂度。
+
+```s=1*h+2^1*(h-1)+2^2*(h-2)+...+2^k*(h-k)+...+2^h-1*1```
+
+错位相减求和,```s=-h+(2^h-2)+2^h=2^(h+1)-h-2```.因为 h=log2(n)，代入公式 S，就能得到 S=O(n)，所以，建堆的时间复杂度就是 O(n)。
+#### 2. 排序
+建堆结束之后，数组中的数据已经是按照大顶堆的特性来组织的。数组中的第一个元素就是堆顶，也就是最大的元素。我们把它跟最后一个元素交换，那最大元素就放到了下标为 n 的位置。
+
+这个过程有点类似上面讲的“删除堆顶元素”的操作，当堆顶元素移除之后，我们把下标为 n 的元素放到堆顶，然后再通过堆化的方法，将剩下的 n−1 个元素重新构建成堆。堆化完成之后，我们再取堆顶的元素，放到下标是 n−1 的位置，一直重复这个过程，直到最后堆中只剩下标为 1 的一个元素，排序工作就完成了。
+
+```java
+// n表示数据的个数，数组a中的数据从下标1到n的位置。
+public static void sort(int[] a, int n) {
+  buildHeap(a, n);
+  int k = n;
+  while (k > 1) {
+    swap(a, 1, k);
+    --k;
+    heapify(a, k, 1);
+  }
+}
+```
+整个堆排序的过程，都只需要极个别临时存储空间，所以堆排序是原地排序算法。堆排序包括建堆和排序两个操作，建堆过程的时间复杂度是 O(n)，排序过程的时间复杂度是 O(nlogn)，所以，堆排序整体的时间复杂度是 O(nlogn)。
+
+堆排序不是稳定的排序算法，因为在排序的过程，存在将堆的最后一个节点跟堆顶节点互换的操作，所以就有可能改变值相同数据的原始相对顺序。
+
+如果从 0 开始存储，实际上处理思路是没有任何变化的，唯一变化的，可能就是，代码实现的时候，计算子节点和父节点的下标的公式改变了。
+
+如果节点的下标是 i，那左子节点的下标就是 2∗i+1，右子节点的下标就是 2∗i+2，父节点的下标就是(i−1)/2。
+
+### 4.解答开篇
+为什么快速排序要比堆排序性能好？
+
+**第一点，堆排序数据访问的方式没有快速排序友好。**
+
+对于快速排序来说，数据是顺序访问的。而对于堆排序来说，数据是跳着访问的。 比如，堆排序中，最重要的一个操作就是数据的堆化。比如下面这个例子，对堆顶节点进行堆化，会依次访问数组下标是 1，2，4，8 的元素，而不是像快速排序那样，局部顺序访问，所以，这样对 CPU 缓存是不友好的。
+
+**第二点，对于同样的数据，在排序过程中，堆排序算法的数据交换次数要多于快速排序。**
+
+快速排序数据交换的次数不会比逆序度多。但是堆排序的第一步是建堆，建堆的过程会打乱数据原有的相对先后顺序，导致原数据的有序度降低。比如，对于一组已经有序的数据来说，经过建堆之后，数据反而变得更无序了。
+### 5.代码实现
+python
+
+binary_heap.py
+```python
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+
+import math
+import random
+
+
+class BinaryHeap:
+    """
+    大顶堆
+    """
+    def __init__(self, data=None, capacity=100):
+        self._data = []
+        self._capacity = capacity
+        if type(data) is list:
+            if len(data) > self._capacity:
+                raise Exception('Heap oversize, capacity:{}, data size:{}'.format(self._capacity, len(data)))
+            self._type_assert(data)
+            self._data = data
+
+        self._length = len(self._data)
+
+    def heapify(self):
+        """
+        堆化
+        :return:
+        """
+        self._heapify(self._data, self._length-1)
+
+    def _heapify(self, data, tail_idx):
+        """
+        堆化内部实现
+        :param data: 需要堆化的数据
+        :param tail_idx: 尾元素的索引
+        :return:
+        """
+        # heapify data[:tail_idx+1]
+        if tail_idx <= 0:
+            return
+
+        # idx of the Last Parent node
+        lp = (tail_idx - 1) // 2
+
+        for i in range(lp, -1, -1):
+            self._heap_down(data, i, tail_idx)
+
+    @staticmethod
+    def _heap_down(data, idx, tail_idx):
+        """
+        将指定的位置堆化
+        :param data: 需要堆化的数据
+        :param idx: data: 中需要堆化的位置
+        :param tail_idx: 尾元素的索引
+        :return:
+        """
+        assert type(data) is list
+
+        lp = (tail_idx - 1) // 2
+        # top-down
+        while idx <= lp:
+            # Left and Right Child index
+            lc = 2 * idx + 1
+            rc = lc + 1
+
+            # right child exists
+            if rc <= tail_idx:
+                tmp = lc if data[lc] > data[rc] else rc
+            else:
+                tmp = lc
+
+            if data[tmp] > data[idx]:
+                data[tmp], data[idx] = data[idx], data[tmp]
+                idx = tmp
+            else:
+                break
+
+    def insert(self, num):
+        """
+        插入
+        :param num:
+        :return:
+        """
+        if self._length < self._capacity:
+            if self._insert(self._data, num):
+                self._length += 1
+                return True
+        return False
+
+    @staticmethod
+    def _insert(data, num):
+        """
+        堆中插入元素的内部实现
+        :param data:
+        :param num:
+        :return:
+        """
+        assert type(data) is list
+        assert type(num) is int
+
+        data.append(num)
+        length = len(data)
+
+        # idx of New Node
+        nn = length - 1
+        # bottom-up
+        while nn > 0:
+            p = (nn-1) // 2
+            if data[nn] > data[p]:
+                data[nn], data[p] = data[p], data[nn]
+                nn = p
+            else:
+                break
+
+        return True
+
+    def get_top(self):
+        """
+        取堆顶
+        :return:
+        """
+        if self._length <= 0:
+            return None
+        return self._data[0]
+
+    def remove_top(self):
+        """
+        取堆顶
+        :return:
+        """
+        ret = None
+        if self._length > 0:
+            ret = self._remove_top(self._data)
+            self._length -= 1
+        return ret
+
+    @staticmethod
+    def _remove_top(data):
+        """
+        取堆顶内部实现
+        :param data:
+        :return:
+        """
+        assert type(data) is list
+
+        length = len(data)
+        if length == 0:
+            return None
+
+        data[0], data[-1] = data[-1], data[0]
+        ret = data.pop()
+        length -= 1
+
+        # length == 0 or == 1, return
+        if length > 1:
+            BinaryHeap._heap_down(data, 0, length-1)
+
+        return ret
+
+    @staticmethod
+    def _type_assert(nums):
+        assert type(nums) is list
+        for n in nums:
+            assert type(n) is int
+
+    @staticmethod
+    def _draw_heap(data):
+        """
+        格式化打印
+        :param data:
+        :return:
+        """
+        length = len(data)
+
+        if length == 0:
+            return 'empty heap'
+
+        ret = ''
+        for i, n in enumerate(data):
+            ret += str(n)
+            # 每行最后一个换行
+            if i == 2**int(math.log(i+1, 2)+1) - 2 or i == len(data) - 1:
+                ret += '\n'
+            else:
+                ret += ', '
+
+        return ret
+
+    def __repr__(self):
+        return self._draw_heap(self._data)
+
+
+if __name__ == '__main__':
+    nums = list(range(10))
+    random.shuffle(nums)
+
+    bh = BinaryHeap(nums)
+    print('--- before heapify ---')
+    print(bh)
+
+    # heapify
+    bh.heapify()
+    print('--- after heapify ---')
+    print(bh)
+
+    # insert
+    print('--- insert ---')
+    if bh.insert(8):
+        print('insert success')
+    else:
+        print('insert fail')
+    print(bh)
+
+    # get top
+    print('--- get top ---')
+    print('get top of the heap: {}'.format(bh.get_top()))
+    bh.remove_top()
+    print(bh)
+
+```
+binary_heap_sort.py
+```python
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+
+from binary_heap import BinaryHeap
+
+
+class BinaryHeapSort(BinaryHeap):
+    def __init__(self):
+        super(BinaryHeapSort, self).__init__()
+
+    def sort(self, nums):
+        """
+        排序
+        1. 堆化，大顶堆
+        2. 排序，从后往前遍历，首尾元素互换，子数组堆化
+        :param nums:
+        :return:
+        """
+        assert type(nums) is list
+        length = len(nums)
+
+        if length <= 1:
+            return
+
+        self._type_assert(nums)
+
+        # heapify
+        self._heapify(nums, length-1)
+
+        # sort
+        for i in range(length-1, 0, -1):
+            nums[0], nums[i] = nums[i], nums[0]
+            self._heap_down(nums, 0, i-1)
+
+        return
+
+
+if __name__ == '__main__':
+    bhs = BinaryHeapSort()
+    nums = [3, 5, 2, 6, 1, 7, 6]
+
+    print('--- before sort ---')
+    print(nums)
+
+    bhs.sort(nums)
+    print('--- after sort ---')
+    print(nums)
+```
+## 29 | 堆的应用：如何快速获取到Top 10最热门的搜索关键词？
+假设现在我们有一个包含 10 亿个搜索关键词的日志文件，如何能快速获取到热门榜 Top 10 的搜索关键词呢？
+### 1.堆的应用一：优先级队列
+优先级队列，顾名思义，它首先应该是一个队列。不过，在优先级队列中，数据的出队顺序不是先进先出，而是按照优先级来，优先级最高的，最先出队。
+
+用堆来实现是最直接、最高效的。这是因为，堆和优先级队列非常相似。一个堆就可以看作一个优先级队列。往优先级队列中插入一个元素，就相当于往堆中插入一个元素；从优先级队列中取出优先级最高的元素，就相当于取出堆顶元素。
+
+#### 1. 合并有序小文件
+假设我们有 100 个小文件，每个文件的大小是 100MB，每个文件中存储的都是有序的字符串。我们希望将这些 100 个小文件合并成一个有序的大文件。这里就会用到优先级队列。
+
+整体思路有点像归并排序中的合并函数。我们从这 100 个文件中，各取第一个字符串，放入数组中，然后比较大小，把最小的那个字符串放入合并后的大文件中，并从数组中删除。
+
+假设，这个最小的字符串来自于 13.txt 这个小文件，我们就再从这个小文件取下一个字符串，放到数组中，重新比较大小，并且选择最小的放入合并后的大文件，将它从数组中删除。依次类推，直到所有的文件中的数据都放入到大文件为止。每次从数组中取最小字符串，都需要循环遍历整个数组，显然，这不是很高效。
+
+我们将从小文件中取出来的字符串放入到小顶堆中，那堆顶的元素，也就是优先级队列队首的元素，就是最小的字符串。我们将这个字符串放入到大文件中，并将其从堆中删除。然后再从小文件中取出下一个字符串，放入到堆中。循环这个过程，就可以将 100 个小文件中的数据依次放入到大文件中。
+#### 2. 高性能定时器
+假设我们有一个定时器，定时器中维护了很多定时任务，每个任务都设定了一个要触发执行的时间点。定时器每过一个很小的单位时间（比如 1 秒），就扫描一遍任务，看是否有任务到达设定的执行时间。如果到达了，就拿出来执行。
+
+但是，这样每过 1 秒就扫描一遍任务列表的做法比较低效，主要原因有两点：第一，任务的约定执行时间离当前时间可能还有很久，这样前面很多次扫描其实都是徒劳的；第二，每次都要扫描整个任务列表，如果任务列表很大的话，势必会比较耗时。
+
+我们按照任务设定的执行时间，将这些任务存储在优先级队列中，队列首部（也就是小顶堆的堆顶）存储的是最先执行的任务。
+
+它拿队首任务的执行时间点，与当前时间点相减，得到一个时间间隔 T。这个时间间隔 T 就是，从当前时间开始，需要等待多久，才会有第一个任务需要被执行。这样，定时器就可以设定在 T 秒之后，再来执行任务。从当前时间点到（T-1）秒这段时间里，定时器都不需要做任何事情。
+
+当 T 秒时间过去之后，定时器取优先级队列中队首的任务执行。然后再计算新的队首任务的执行时间点与当前时间点的差值，把这个值作为定时器执行下一个任务需要等待的时间。
+### 2.堆的应用二：利用堆求 Top K
+我把这种求 Top K 的问题抽象成两类。一类是针对静态数据集合，也就是说数据集合事先确定，不会再变。另一类是针对动态数据集合，也就是说数据集合事先并不确定，有数据动态地加入到集合中。
+
