@@ -263,115 +263,6 @@ Java ArrayList 无法存储基本类型，比如 int、long，需要封装为 In
 2. 如果此数据没有在缓存链表中，又可以分为两种情况：
 如果此时缓存未满，则将此结点直接插入到链表的头部；
 如果此时缓存已满，则链表尾结点删除，将新的数据结点插入链表的头部。
-```python
-# Definition for singly-linked list.
-class DbListNode(object):
-    def __init__(self, x, y):
-        self.key = x
-        self.val = y
-        self.next = None
-        self.prev = None
-
-
-class LRUCache:
-    '''
-    leet code: 146
-        运用你所掌握的数据结构，设计和实现一个  LRU (最近最少使用) 缓存机制。
-        它应该支持以下操作： 获取数据 get 和 写入数据 put 。
-        获取数据 get(key) - 如果密钥 (key) 存在于缓存中，则获取密钥的值（总是正数），否则返回 -1。
-        写入数据 put(key, value) - 如果密钥不存在，则写入其数据值。
-            当缓存容量达到上限时，它应该在写入新数据之前删除最近最少使用的数据值，从而为新的数据值留出空间
-
-    哈希表+双向链表
-    哈希表: 查询 O(1)
-    双向链表: 有序, 增删操作 O(1)
-
-    Author: Ben
-    '''
-
-    def __init__(self, capacity: int):
-        self.cap = capacity
-        self.hkeys = {}
-        # self.top和self.tail作为哨兵节点, 避免越界
-        self.top = DbListNode(None, -1)
-        self.tail = DbListNode(None, -1)
-        self.top.next = self.tail
-        self.tail.prev = self.top
-
-    def get(self, key: int) -> int:
-
-        if key in self.hkeys.keys():
-            # 更新结点顺序
-            cur = self.hkeys[key]
-            # 跳出原位置
-            cur.next.prev = cur.prev
-            cur.prev.next = cur.next
-            # 最近用过的置于链表首部
-            top_node = self.top.next
-            self.top.next = cur
-            cur.prev = self.top
-            cur.next = top_node
-            top_node.prev = cur
-
-            return self.hkeys[key].val
-        return -1
-
-    def put(self, key: int, value: int) -> None:
-        if key in self.hkeys.keys():
-            cur = self.hkeys[key]
-            cur.val = value
-            # 跳出原位置
-            cur.prev.next = cur.next
-            cur.next.prev = cur.prev
-
-            # 最近用过的置于链表首部
-            top_node = self.top.next
-            self.top.next = cur
-            cur.prev = self.top
-            cur.next = top_node
-            top_node.prev = cur
-        else:
-            # 增加新结点至首部
-            cur = DbListNode(key, value)
-            self.hkeys[key] = cur
-            # 最近用过的置于链表首部
-            top_node = self.top.next
-            self.top.next = cur
-            cur.prev = self.top
-            cur.next = top_node
-            top_node.prev = cur
-            if len(self.hkeys.keys()) > self.cap:
-                self.hkeys.pop(self.tail.prev.key)
-                # 去掉原尾结点
-                self.tail.prev.prev.next = self.tail
-                self.tail.prev = self.tail.prev.prev
-
-    def __repr__(self):
-        vals = []
-        p = self.top.next
-        while p.next:
-            vals.append(str(p.val))
-            p = p.next
-        return '->'.join(vals)
-
-
-if __name__ == '__main__':
-    cache = LRUCache(2)
-    cache.put(1, 1)
-    cache.put(2, 2)
-    print(cache)
-    cache.get(1)  # 返回  1
-    cache.put(3, 3)  # 该操作会使得密钥 2 作废
-    print(cache)
-    cache.get(2)  # 返回 -1 (未找到)
-    cache.put(4, 4)  # 该操作会使得密钥 1 作废
-    print(cache)
-    cache.get(1)  # 返回 -1 (未找到)
-    cache.get(3)  # 返回  3
-    print(cache)
-    cache.get(4)  # 返回  4
-    print(cache)
-```
 ## 07 | 链表（下）：如何轻松写出正确的链表代码？
 ### 1.技巧一：理解指针或引用的含义
 将某个变量赋值给指针，实际上就是将这个变量的地址赋值给指针，或者反过来说，指针中存储了这个变量的内存地址，指向了这个变量，通过指针就能找到这个变量。
@@ -489,83 +380,6 @@ main先入栈，再add入栈，再add出栈，最后main出栈
 其实，我们不一定非要用栈来保存临时变量，只不过如果这个函数调用符合后进先出的特性，用栈这种数据结构来实现，是最顺理成章的选择。
 
 从调用函数进入被调用函数，对于数据来说，变化的是什么呢？是作用域。所以根本上，只要能保证每进入一个新的函数，都是一个新的作用域就可以。而要实现这个，用栈就非常方便。在进入被调用函数的时候，分配一段栈空间给这个函数的变量，在函数结束的时候，将栈顶复位，正好回到调用函数的作用域内。
-```python
-"""
-    a simple browser realize
-    Author: zhenchao.zhu
-    解答：我们使用两个栈，X 和 Y，我们把首次浏览的页面依次压入栈 X，当点击后退按钮时，再依次从栈 X 中出栈，
-    并将出栈的数据依次放入栈 Y。当我们点击前进按钮时，我们依次从栈 Y 中取出数据，放入栈 X 中。
-    当栈 X 中没有数据时，那就说明没有页面可以继续后退浏览了。当栈 Y 中没有数据，
-    那就说明没有页面可以点击前进按钮浏览了。
-"""
-
-import sys
-# 引用当前文件夹下的single_linked_list
-sys.path.append('linked_stack.py')
-from linked_stack import LinkedStack
-#from .linked_stack import LinkedStack
-
-class NewLinkedStack(LinkedStack):
-
-    def is_empty(self):
-        return not self._top
-
-
-class Browser():
-
-    def __init__(self):
-        self.forward_stack = NewLinkedStack()
-        self.back_stack = NewLinkedStack()
-
-    def can_forward(self):
-        if self.back_stack.is_empty():
-            return False
-
-        return True
-
-    def can_back(self):
-        if self.forward_stack.is_empty():
-            return False
-
-        return True
-
-    def open(self, url):
-        print("Open new url %s" % url, end="\n")
-        self.forward_stack.push(url)
-
-    def back(self):
-        if self.forward_stack.is_empty():
-            return
-
-        top = self.forward_stack.pop()
-        self.back_stack.push(top)
-        print("back to %s" % top, end="\n")
-
-    def forward(self):
-        if self.back_stack.is_empty():
-            return
-
-        top = self.back_stack.pop()
-        self.forward_stack.push(top)
-        print("forward to %s" % top, end="\n")
-
-
-if __name__ == '__main__':
-
-    browser = Browser()
-    browser.open('a')
-    browser.open('b')
-    browser.open('c')
-    if browser.can_back():
-        browser.back()
-
-    if browser.can_forward():
-        browser.forward()
-
-    browser.back()
-    browser.back()
-    browser.back()
-```
 ## 09 | 队列：队列在线程池等有限资源池中的应用
 我们知道，CPU 资源是有限的，任务的处理速度与线程个数并不是线性正相关。相反，过多的线程反而会导致 CPU 频繁切换，处理性能下降。所以，线程池的大小一般都是综合考虑要处理任务的特点和硬件环境，来事先设置的。
 
@@ -629,51 +443,6 @@ public class CircularQueue {
     return ret;
   }
 }
-```
-```python
-"""
-    Author: Wenru
-"""
-
-from typing import Optional
-from itertools import chain
-
-class CircularQueue:
-
-    def __init__(self, capacity):
-        self._items = []
-        self._capacity = capacity + 1
-        self._head = 0
-        self._tail = 0
-    
-    def enqueue(self, item: str) -> bool:
-        if (self._tail + 1) % self._capacity == self._head:
-            return False
-        
-        self._items.append(item)
-        self._tail = (self._tail + 1) % self._capacity
-        return True
-    
-    def dequeue(self) -> Optional[str]:
-        if self._head != self._tail:
-            item = self._items[self._head]
-            self._head = (self._head + 1) % self._capacity
-            return item
-    
-    def __repr__(self) -> str:
-        if self._tail >= self._head:
-            return " ".join(item for item in self._items[self._head : self._tail])
-        else:
-            return " ".join(item for item in chain(self._items[self._head:], self._items[:self._tail]))
-
-if __name__ == "__main__":
-    q = CircularQueue(5)
-    for i in range(5):
-        q.enqueue(str(i))
-    q.dequeue()
-    q.dequeue()
-    q.enqueue(str(5))
-    print(q)
 ```
 ### 4.阻塞队列和并发队列
 **阻塞队列**其实就是在队列基础上增加了阻塞操作。简单来说，就是在队列为空的时候，从队头取数据会被阻塞。因为此时还没有数据可取，直到队列中有了数据才能返回；如果队列已经满了，那么插入数据的操作就会被阻塞，直到队列中有空闲位置后再插入数据，然后再返回。
@@ -921,74 +690,6 @@ merge(A[p...r], A[p...q], A[q+1...r]) {
   }
 }
 ```
-python
-```python
-"""
-    Author: Wenru
-"""
-
-from typing import List
-
-
-def merge_sort(a: List[int]):
-    _merge_sort_between(a, 0, len(a) - 1)
-
-
-def _merge_sort_between(a: List[int], low: int, high: int):
-    # The indices are inclusive for both low and high.
-    if low < high:
-        mid = low + (high - low) // 2
-        _merge_sort_between(a, low, mid)
-        _merge_sort_between(a, mid + 1, high)
-        _merge(a, low, mid, high)
-
-
-def _merge(a: List[int], low: int, mid: int, high: int):
-    # a[low:mid], a[mid+1, high] are sorted.
-    i, j = low, mid + 1
-    tmp = []
-    while i <= mid and j <= high:
-        if a[i] <= a[j]:
-            tmp.append(a[i])
-            i += 1
-        else:
-            tmp.append(a[j])
-            j += 1
-    start = i if i <= mid else j
-    end = mid if i <= mid else high
-    tmp.extend(a[start:end + 1])
-    a[low:high + 1] = tmp
-
-
-def test_merge_sort():
-    a1 = [3, 5, 6, 7, 8]
-    merge_sort(a1)
-    assert a1 == [3, 5, 6, 7, 8]
-    a2 = [2, 2, 2, 2]
-    merge_sort(a2)
-    assert a2 == [2, 2, 2, 2]
-    a3 = [4, 3, 2, 1]
-    merge_sort(a3)
-    assert a3 == [1, 2, 3, 4]
-    a4 = [5, -1, 9, 3, 7, 8, 3, -2, 9]
-    merge_sort(a4)
-    assert a4 == [-2, -1, 3, 3, 5, 7, 8, 9, 9]
-
-
-if __name__ == "__main__":
-    a1 = [3, 5, 6, 7, 8]
-    a2 = [2, 2, 2, 2]
-    a3 = [4, 3, 2, 1]
-    a4 = [5, -1, 9, 3, 7, 8, 3, -2, 9]
-    merge_sort(a1)
-    print(a1)
-    merge_sort(a2)
-    print(a2)
-    merge_sort(a3)
-    print(a3)
-    merge_sort(a4)
-    print(a4)
-```
 ### 2.归并排序的性能分析
 #### 第一，归并排序是稳定的排序算法吗？
 在合并的过程中，如果 A[p...q]和 A[q+1...r]之间有值相同的元素，那我们可以像伪代码中那样，先把 A[p...q]中的元素放入 tmp 数组。这样就保证了值相同的元素，在合并前后的先后顺序不变。所以，归并排序是一个稳定的排序算法。
@@ -1073,138 +774,6 @@ partition(A, p, r) {
 
 归并排序的处理过程是由下到上的，先处理子问题，然后再合并。而快排正好相反，它的处理过程是由上到下的，先分区，然后再处理子问题。归并排序虽然是稳定的、时间复杂度为 O(nlogn) 的排序算法，但是它是非原地排序算法。我们前面讲过，归并之所以是非原地排序算法，主要原因是合并函数无法在原地执行。快速排序通过设计巧妙的原地分区函数，可以实现原地排序，解决了归并排序占用太多内存的问题。
 
-python
-```python
-"""
-    Author: Wenru
-"""
-
-from typing import List
-import random
-
-
-def quick_sort(a: List[int]):
-    _quick_sort_between(a, 0, len(a) - 1)
-
-
-def _quick_sort_between(a: List[int], low: int, high: int):
-    if low < high:
-        # get a random position as the pivot
-        k = random.randint(low, high)
-        a[low], a[k] = a[k], a[low]
-
-        m = _partition(a, low, high)  # a[m] is in final position
-        _quick_sort_between(a, low, m - 1)
-        _quick_sort_between(a, m + 1, high)
-
-
-def _partition(a: List[int], low: int, high: int):
-    pivot, j = a[low], low
-    for i in range(low + 1, high + 1):
-        if a[i] <= pivot:
-            j += 1
-            a[j], a[i] = a[i], a[j]  # swap
-    a[low], a[j] = a[j], a[low]
-    return j
-
-
-def test_quick_sort():
-    a1 = [3, 5, 6, 7, 8]
-    quick_sort(a1)
-    assert a1 == [3, 5, 6, 7, 8]
-    a2 = [2, 2, 2, 2]
-    quick_sort(a2)
-    assert a2 == [2, 2, 2, 2]
-    a3 = [4, 3, 2, 1]
-    quick_sort(a3)
-    assert a3 == [1, 2, 3, 4]
-    a4 = [5, -1, 9, 3, 7, 8, 3, -2, 9]
-    quick_sort(a4)
-    assert a4 == [-2, -1, 3, 3, 5, 7, 8, 9, 9]
-
-
-if __name__ == "__main__":
-    a1 = [3, 5, 6, 7, 8]
-    a2 = [2, 2, 2, 2]
-    a3 = [4, 3, 2, 1]
-    a4 = [5, -1, 9, 3, 7, 8, 3, -2, 9]
-    quick_sort(a1)
-    print(a1)
-    quick_sort(a2)
-    print(a2)
-    quick_sort(a3)
-    print(a3)
-    quick_sort(a4)
-    print(a4)
-```
-python双向排序
-```python
-import random
-
-
-def QuickSort(arr):
-    # 双向排序: 提高非随机输入的性能
-    # 不需要额外的空间,在待排序数组本身内部进行排序
-    # 基准值通过random随机选取
-    # 入参: 待排序数组, 数组开始索引 0, 数组结束索引 len(array)-1
-    if arr is None or len(arr) < 1:
-        return arr
-
-    def swap(arr, low, upper):
-        tmp = arr[low]
-        arr[low] = arr[upper]
-        arr[upper] = tmp
-        return arr
-
-    def QuickSort_TwoWay(arr, low, upper):
-        # 小数组排序i可以用插入或选择排序
-        # if upper-low < 50 : return arr
-        # 基线条件: low index = upper index; 也就是只有一个值的区间
-        if low >= upper:
-            return arr
-        # 随机选取基准值, 并将基准值替换到数组第一个元素
-        swap(arr, low, int(random.uniform(low, upper)))
-        temp = arr[low]
-        # 缓存边界值, 从上下边界同时排序
-        i, j = low, upper
-        while True:
-            # 第一个元素是基准值,所以要跳过
-            i += 1
-            # 在小区间中, 进行排序
-            # 从下边界开始寻找大于基准值的索引
-            while i <= upper and arr[i] <= temp:
-                i += 1
-            # 从上边界开始寻找小于基准值的索引
-            # 因为j肯定大于i, 所以索引值肯定在小区间中
-            while arr[j] > temp:
-                j -= 1
-            # 如果小索引大于等于大索引, 说明排序完成, 退出排序
-            if i >= j:
-                break
-            swap(arr, i, j)
-        # 将基准值的索引从下边界调换到索引分割点
-        swap(arr, low, j)
-        QuickSort_TwoWay(arr, low, j - 1)
-        QuickSort_TwoWay(arr, j + 1, upper)
-        return arr
-
-    return QuickSort_TwoWay(arr, 0, len(arr) - 1)
-
-
-if __name__ == "__main__":
-    a1 = [3, 5, 6, 7, 8]
-    a2 = [2, 2, 2, 2]
-    a3 = [4, 3, 2, 1]
-    a4 = [5, -1, 9, 3, 7, 8, 3, -2, 9]
-    QuickSort(a1)
-    print(a1)
-    QuickSort(a2)
-    print(a2)
-    QuickSort(a3)
-    print(a3)
-    QuickSort(a4)
-    print(a4)
-```
 ### 4.快速排序的性能分析
 对于递归代码的时间复杂度，我前面总结的公式，这里也还是适用的。如果每次分区操作，都能正好把数组分成大小接近相等的两个小区间，那快排的时间复杂度递推求解公式跟归并是相同的。所以，快排的时间复杂度也是 O(nlogn)。
 ```
@@ -1258,37 +827,6 @@ T(n) 在大部分情况下的时间复杂度都可以做到 O(nlogn)，只有在
 不过，你可能也发现了，订单按照金额在 1 元到 10 万元之间并不一定是均匀分布的 ，所以 10GB 订单数据是无法均匀地被划分到 100 个文件中的。有可能某个金额区间的数据特别多，划分之后对应的文件就会很大，没法一次性读入内存。
 
 针对这些划分之后还是比较大的文件，我们可以继续划分，比如，订单金额在 1 元到 1000 元之间的比较多，我们就将这个区间继续划分为 10 个小区间，1 元到 100 元，101 元到 200 元，201 元到 300 元....901 元到 1000 元。如果划分之后，101 元到 200 元之间的订单还是太多，无法一次性读入内存，那就继续再划分，直到所有的文件都能读入内存为止。
-#### 代码
-```python
-N = 100010
-w = n = 0
-a = [0] * N
-bucket = [[] for i in range(N)]
-
-
-def insertion_sort(A):
-    for i in range(1, len(A)):
-        key = A[i]
-        j = i - 1
-        while j >= 0 and A[j] > key:
-            A[j + 1] = A[j]
-            j -= 1
-        A[j + 1] = key
-
-
-def bucket_sort():
-    bucket_size = int(w / n + 1)
-    for i in range(0, n):
-        bucket[i].clear()
-    for i in range(1, n + 1):
-        bucket[int(a[i] / bucket_size)].append(a[i])
-    p = 0
-    for i in range(0, n):
-        insertion_sort(bucket[i])
-        for j in range(0, len(bucket[i])):
-            a[p] = bucket[i][j]
-            p += 1
-```
 ### 2.计数排序（Counting sort）
 **计数排序其实是桶排序的一种特殊情况**
 
@@ -1305,49 +843,6 @@ def bucket_sort():
 以此类推，当我们扫描到第 2 个分数为 3 的考生的时候，就会把它放入数组 R 中的第 6 个元素的位置（也就是下标为 5 的位置）。当我们扫描完整个数组 A 后，数组 R 内的数据就是按照分数从小到大有序排列的了。
 
 **计数排序只能用在数据范围不大的场景中，如果数据范围 k 比要排序的数据 n 大很多，就不适合用计数排序了。而且，计数排序只能给非负整数排序，如果要排序的数据是其他类型的，要将其在不改变相对大小的情况下，转化为非负整数。**
-#### 代码
-```python
-"""
-    计数排序
-
-    Author: Wenru
-"""
-
-from typing import List
-import itertools
-
-def counting_sort(a: List[int]):
-    if len(a) <= 1: return
-    
-    # a中有counts[i]个数不大于i
-    counts = [0] * (max(a) + 1)
-    for num in a:
-        counts[num] += 1
-    counts = list(itertools.accumulate(counts))
-
-    # 临时数组，储存排序之后的结果
-    a_sorted = [0] * len(a)
-    for num in reversed(a):
-        index = counts[num] - 1
-        a_sorted[index] = num
-        counts[num] -= 1
-    
-    a[:] = a_sorted
-
-
-if __name__ == "__main__":
-    a1 = [1, 2, 3, 4]
-    counting_sort(a1)
-    print(a1)
-
-    a2 = [1, 1, 1, 1]
-    counting_sort(a2)
-    print(a2)
-
-    a3 = [4, 5, 0, 9, 3, 3, 1, 9, 8, 7]
-    counting_sort(a3)
-    print(a3)
-```
 ### 3.基数排序（Radix sort）
 假设我们有 10 万个手机号码，希望将这 10 万个手机号码从小到大排序，你有什么比较快速的排序方法呢？
 
@@ -1361,33 +856,6 @@ if __name__ == "__main__":
 
 **基数排序对要排序的数据是有要求的，需要可以分割出独立的“位”来比较，而且位之间有递进的关系，如果 a 数据的高位比 b 数据大，那剩下的低位就不用比较了。除此之外，每一位的数据范围不能太大，要可以用线性排序算法来排序，否则，基数排序的时间复杂度就无法做到 O(n) 了。**
 
-#### 代码
-```python
-def radix_sort(data):
-
-    if not data:
-        return []
-    max_num = max(data)  # 获取当前数列中最大值
-    max_digit = len(str(abs(max_num)))  # 获取最大的位数
-
-    dev = 1  # 第几位数，个位数为1，十位数为10···
-    mod = 10  # 求余数的除法
-    for i in range(max_digit):
-        radix_queue = [list() for k in range(mod * 2)]  # 考虑到负数，我们用两倍队列
-        for j in range(len(data)):
-            radix = int(((data[j] % mod) / dev) + mod)
-            radix_queue[radix].append(data[j])
-
-        pos = 0
-        for queue in radix_queue:
-            for val in queue:
-                data[pos] = val
-                pos += 1
-
-        dev *= 10
-        mod *= 10
-    return data
-```
 ### 4.解答开篇
 根据年龄给 100 万用户排序，就类似按照成绩给 50 万考生排序。我们假设年龄的范围最小 1 岁，最大不超过 120 岁。我们可以遍历这 100 万用户，根据年龄将其划分到这 120 个桶里，然后依次顺序遍历这 120 个桶中的元素。这样就得到了按照年龄排序的 100 万用户数据。
 ## 14 | 排序优化：如何实现一个通用的、高性能的排序函数？
@@ -1462,30 +930,6 @@ public int bsearch(int[] a, int n, int value) {
   return -1;
 }
 ```
-```python
-"""
-    Author: Wenru
-"""
-
-from typing import List
-
-def bsearch(nums: List[int], target: int) -> int:
-    """Binary search of a target in a sorted array
-    without duplicates. If such a target does not exist,
-    return -1, othewise, return its index.
-    """
-    low, high = 0, len(nums) - 1
-    while low <= high:
-        mid = low + (high - low) // 2
-        if nums[mid] == target:
-            return mid
-        elif nums[mid] < target:
-            low = mid + 1
-        else:
-            high = mid - 1
-    
-    return -1
-```
 low、high、mid 都是指数组下标，其中 low 和 high 表示当前查找的区间范围，初始 low=0， high=n-1。mid 表示[low, high]的中间位置。我们通过对比 a[mid]与 value 的大小，来更新接下来要查找的区间范围，直到找到或者区间缩小为 0，就退出。
 #### 1. 循环退出条件
 注意是 low<=high，而不是 low<high。
@@ -1515,30 +959,6 @@ private int bsearchInternally(int[] a, int low, int high, int value) {
     return bsearchInternally(a, low, mid-1, value);
   }
 }
-```
-```python
-"""
-    Author: dreamkong
-"""
-
-from typing import List
-
-
-def bsearch(nums: List[int], target: int) -> int:
-    return bsearch_internally(nums, 0, len(nums)-1, target)
-
-
-def bsearch_internally(nums: List[int], low: int, high: int, target: int) -> int:
-    if low > high:
-        return -1
-
-    mid = low+int((high-low) >> 2)
-    if nums[mid] == target:
-        return mid
-    elif nums[mid] < target:
-        return bsearch_internally(nums, mid+1, high, target)
-    else:
-        return bsearch_internally(nums, low, mid-1, target)
 ```
 ### 4.二分查找应用场景的局限性
 **首先，二分查找依赖的是顺序表结构，简单点说就是数组。**原因是二分查找算法需要按照下标随机访问元素。
@@ -1682,105 +1102,7 @@ public int bsearch7(int[] a, int n, int value) {
 当我们要查询某个 IP 归属地时，我们可以先通过二分查找，找到最后一个起始 IP 小于等于这个 IP 的 IP 区间，然后，检查这个 IP 是否在这个 IP 区间内，如果在，我们就取出对应的归属地显示；如果不在，就返回未查找到。
 
 变体的二分查找算法写起来非常烧脑，很容易因为细节处理不好而产生 Bug，这些容易出错的细节有：**终止条件、区间上下界更新方法、返回值选择。**
-### 6.代码
-python
-```python
-"""
-    Author: Wenru
-    Fix: nzjia
-"""
 
-from typing import List
-
-def bsearch_left(nums: List[int], target: int) -> int:
-    """Binary search of the index of the first element
-    equal to a given target in the ascending sorted array.
-    If not found, return -1.
-    """
-    low, high = 0, len(nums) - 1
-    while low <= high:
-        mid = low + (high - low) // 2
-        if nums[mid] < target:
-            low = mid + 1
-        else:
-            high = mid - 1
-    if low < len(nums) and nums[low] == target:
-        return low
-    else:
-        return -1
-
-
-def bsearch_right(nums: List[int], target: int) -> int:
-    """Binary search of the index of the last element
-    equal to a given target in the ascending sorted array.
-    If not found, return -1.
-    """
-    low, high = 0, len(nums) - 1
-    while low <= high:
-        mid = low + (high - low) // 2
-        if nums[mid] <= target:
-            low = mid + 1
-        else:
-            high = mid - 1
-    if high >= 0 and nums[high] == target:
-        return high
-    else:
-        return -1
-
-
-def bsearch_left_not_less(nums: List[int], target: int) -> int:
-    """Binary search of the index of the first element
-    not less than a given target in the ascending sorted array.
-    If not found, return -1.
-    """
-    low, high = 0, len(nums) - 1
-    while low <= high:
-        mid = low + (high - low) // 2
-        if nums[mid] < target:
-            low = mid + 1
-        else:
-            high = mid - 1
-    if low < len(nums) and nums[low] >= target:
-        return low
-    else:
-        return -1
-
-def bsearch_right_not_greater(nums: List[int], target: int) -> int:
-    """Binary search of the index of the last element
-    not greater than a given target in the ascending sorted array.
-    If not found, return -1.
-    """
-    low, high = 0, len(nums) - 1
-    while low <= high:
-        mid = low + (high - low) // 2
-        if nums[mid] <= target:
-            low = mid + 1
-        else:
-            high = mid - 1
-    if high >= 0 and nums[high] <= target:
-        return high
-    else:
-        return -1
-
-if __name__ == "__main__":
-    a = [1, 1, 2, 3, 4, 6, 7, 7, 7, 7, 10, 22]
-
-    print(bsearch_left(a, 0) == -1)
-    print(bsearch_left(a, 7) == 6)
-    print(bsearch_left(a, 30) == -1)
-
-    print(bsearch_right(a, 0) == -1)
-    print(bsearch_right(a, 7) == 9)
-    print(bsearch_right(a, 30) == -1)
-
-    print(bsearch_left_not_less(a, 0) == 0)
-    print(bsearch_left_not_less(a, 5) == 5)
-    print(bsearch_left_not_less(a, 30) == -1)
-
-    print(bsearch_right_not_greater(a, 0) == -1)
-    print(bsearch_right_not_greater(a, 6) == 5)
-    print(bsearch_right_not_greater(a, 30) == 11)
-```
 ## 17 | 跳表：为什么Redis一定要用跳表来实现有序集合？
 我们只需要对链表稍加改造，就可以支持类似“二分”的查找算法。我们把改造之后的数据结构叫做**跳表**（Skip list）
 
@@ -2595,3 +1917,26 @@ public static void sort(int[] a, int n) {
 首先，邻接矩阵的存储方式简单、直接，因为基于数组，所以在获取两个顶点的关系时，就非常高效。其次，用邻接矩阵存储图的另外一个好处是方便计算。这是因为，用邻接矩阵的方式存储图，可以将很多图的运算转换成矩阵之间的运算。
 
 ### 3.邻接表存储方法
+邻接表每个顶点对应一条链表，链表中存储的是与这个顶点相连接的其他顶点。
+
+```commandline
+need pic
+```
+
+图中画的是一个有向图的邻接表存储方式，每个顶点对应的链表里面，存储的是指向的顶点。对于无向图来说，也是类似的，不过，每个顶点的链表中存储的，是跟这个顶点有边相连的顶点，你可以自己画下。
+
+邻接矩阵存储起来比较浪费空间，但是使用起来比较节省时间。相反，邻接表存储起来比较节省空间，但是使用起来就比较耗时间。
+
+就像图中的例子，如果我们要确定，是否存在一条从顶点 2 到顶点 4 的边，那我们就要遍历顶点 2 对应的那条链表，看链表中是否存在顶点 4。而且，我们前面也讲过，链表的存储方式对缓存不友好。所以，比起邻接矩阵的存储方式，在邻接表中查询两个顶点之间的关系就没那么高效了。
+
+我们可以将邻接表中的链表改成平衡二叉查找树。实际开发中，我们可以选择用红黑树。这样，我们就可以更加快速地查找两个顶点之间是否存在边了。当然，这里的二叉查找树可以换成其他动态数据结构，比如跳表、散列表等。除此之外，我们还可以将链表改成有序动态数组，可以通过二分查找的方法来快速定位两个顶点之间否是存在边。
+
+### 4.解答开篇
+如何存储微博、微信等社交网络中的好友关系？
+
+用一个邻接表来存储这种有向图是不够的。我们去查找某个用户关注了哪些用户非常容易，但是如果要想知道某个用户都被哪些用户关注了，也就是用户的粉丝列表，是非常困难的。
+
+基于此，我们需要一个逆邻接表。邻接表中存储了用户的关注关系，逆邻接表中存储的是用户的被关注关系。对应到图上，邻接表中，每个顶点的链表中，存储的就是这个顶点指向的顶点，逆邻接表中，每个顶点的链表中，存储的是指向这个顶点的顶点。如果要查找某个用户关注了哪些用户，我们可以在邻接表中查找；如果要查找某个用户被哪些用户关注了，我们从逆邻接表中查找。
+
+将邻接表中的链表改为支持快速查找的动态数据结构。因为我们需要按照用户名称的首字母排序，分页来获取用户的粉丝列表或者关注列表，用跳表这种结构再合适不过了。
+
