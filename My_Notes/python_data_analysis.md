@@ -82,6 +82,7 @@ dtype（数据类型）是一个特殊的对象，它含有ndarray将一块内�
 dtype是NumPy灵活交互其它系统的源泉之一。多数情况下，它们直接映射到相应的机器表示，这使得“读写磁盘上的二进制数据流”以及“集成低级语言代码（如C、Fortran）”等工作变得更加简单。数值型dtype的命名方式相同：一个类型名（如float或int），后面跟一个用于表示各元素位长的数字。标准的双精度浮点值（即Python中的float对象）需要占用8字节（即64位）。因此，该类型在NumPy中就记作float64。
 
 ```python
+import numpy as np
 # 你可以通过ndarray的astype方法明确地将一个数组从一个dtype转换成另一个dtype
 arr = np.array([1, 2, 3, 4, 5])
 arr.dtype # Output: dtype('float64')
